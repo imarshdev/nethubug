@@ -1,0 +1,33 @@
+#root {
+  margin: 0;
+  padding: 0rem;
+  width: 100%;
+  height: 100vh;
+}
+
+@font-face {
+  font-family: retro;
+  src: url(./fonts/Bebas_Neue/BebasNeue-Regular.ttf);
+}
+
+@font-face {
+  font-family: roboto;
+  src: url(./fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf);
+}
+
+.container {
+  width: 100%;
+  height: 100vh;
+  background-color: #FFF9C9;
+  overflow: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#retro {
+  font-family: retro;
+}
+
+#roboto {
+  font-family: roboto;
+}

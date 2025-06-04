@@ -1,0 +1,32 @@
+.navbar-container {
+    display: flex;
+    width: 98%;
+    height: 15vh;
+    box-sizing: border-box;
+    padding: 10px 30px;
+    background-color: #B5C99A;
+    margin: 0.5% 1%;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+    color: #fff;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3),
+        inset 0px 0px 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Add media queries for smaller screens */
+@media (max-width: 768px) {
+    .navbar-container {
+        height: 10vh;
+        width: 96%;
+        margin: 2% 2%;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-container {
+        height: 10vh;
+    }
+}
