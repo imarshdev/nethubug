@@ -4,6 +4,8 @@ import apple from "../../assets/apple.svg";
 import close from "../../assets/close.svg";
 import { getPaymentDate } from "../../utils/paydate";
 import { useEffect, useState } from "react";
+import SpotifyAccount from "./spotify/spotify";
+import AppleAccount from "./apple/apple";
 
 export default function Services() {
   const [payDate, setPayDate] = useState({ day: "", month: "" });
@@ -55,13 +57,7 @@ export default function Services() {
         <div className="modal-overlay">
           <div className="modal-content">
             {selectedService === "spotify" && <SpotifyAccount />}
-            {selectedService === "apple" && (
-              <>
-                <h3 id="roboto">Apple Music Setup</h3>
-                <p>Let’s get you subscribed to Apple Music with ease.</p>
-                {/* Add Apple-specific flow here */}
-              </>
-            )}
+            {selectedService === "apple" && <AppleAccount />}
             <div className="close-button" onClick={() => setShowModal(false)}>
               <img src={close} style={{ height: "20px" }} />
             </div>
@@ -71,67 +67,3 @@ export default function Services() {
     </div>
   );
 }
-
-const SpotifyAccount = () => {
-  const [step, setStep] = useState(1);
-  const [payDate, setPayDate] = useState({ day: "", month: "" });
-
-  useEffect(() => {
-    const info = getPaymentDate();
-    setPayDate(info);
-  }, []);
-
-  return (
-    <div className={`step-container ${step === 2 ? "slide-left" : ""}`}>
-      {step === 1 && (
-        <div className="step-content">
-          <h3 id="roboto">Spotify Premium Setup</h3>
-          <span id="roboto">
-            <b>Welcome! Let’s get you into a Spotify family plan.</b>
-          </span>
-          <br />
-          <>
-            <span>• Use Your Own Account</span>
-            <span>• Unlimited Music Streaming</span>
-            <span>• Downloads for Offline Use</span>
-            <span>• Ad free listening</span>
-            <span>
-              • Start now, pay on the {payDate.day}th of {payDate.month}
-            </span>
-          </>
-          <br />
-          <button className="start-button" onClick={() => setStep(2)}>
-            <b>Get Now</b>
-          </button>
-        </div>
-      )}
-      {step === 2 && (
-        <div className="step-content">
-          <h3 id="roboto">
-            Select your package and provide details to proceed.
-          </h3>
-          <br />
-          <label id="roboto">Select Package</label>
-          <select name="" className="input">
-            <option value="Monthly">
-              Monthly Package <b>UGX.6,000</b>
-            </option>
-            <option value="Bi-annual">
-              Bi-Annual (6 Months) Package - UGX.35,000
-            </option>
-            <option value="Bi-annual">
-              Annual (1 Year) Package - UGX.65,000
-            </option>
-          </select>
-          <br />
-          <label id="roboto">Names</label>
-          <input type="text" placeholder="Enter Full Name" className="input" />
-          <br />
-          <button className="start-button">
-            <b id="roboto">Proceed to Whatsapp</b>
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};

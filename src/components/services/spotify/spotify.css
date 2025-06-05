@@ -1,0 +1,141 @@
+.input {
+    width: 50%;
+    height: 3rem;
+    font-size: 16px;
+    padding: 0 10px;
+    margin-top: 10px;
+    border-radius: 2px;
+    box-sizing: border-box;
+    background-color: #F5F5DC;
+    /* A warm, beige background color */
+    border: 1px solid #666;
+    /* A dark border to give it a chunky feel */
+    border-radius: 0;
+    /* Remove any rounded corners to give it a more retro look */
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    /* A subtle inner shadow to give it some depth */
+    font-family: roboto;
+    /* A monospaced font to give it a retro typewriter feel */
+}
+
+.input::placeholder {
+    color: #999;
+    /* A muted color for the placeholder text */
+}
+
+.input:focus {
+    outline: none;
+}
+
+
+
+/* Container holding the content */
+.step-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Content that will slide */
+.step-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    animation-duration: 0.6s;
+    animation-fill-mode: forwards;
+}
+
+.step-content span {
+    font-family: roboto;
+    font-size: 14px;
+    align-self: flex-start;
+}
+
+.step-content label {
+    width: 50%;
+    border-bottom: solid .1px #cccccc;
+}
+
+/* When moving to Step 2 */
+.slide-left .step-content {
+    animation-name: slideInLeft;
+}
+
+/* Animation keyframes */
+@keyframes slideInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0%);
+    }
+}
+
+
+.package {
+    width: 50%;
+    height: 12rem;
+    box-sizing: border-box;
+}
+
+.package-option {
+    width: 98%;
+    height: 3rem;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 14px;
+    border: solid 1px #cccccc;
+    cursor: pointer;
+}
+
+.package-option.selected {
+    background-color: #CAE8BD;
+}
+
+.package-option:focus {
+    background-color: #CAE8BD;
+}
+
+.package-option span {
+    margin-right: 20px;
+}
+
+
+/* Add media queries for smaller screens */
+@media (max-width: 768px) {
+    .input {
+        width: 70%;
+    }
+}
+
+@media (max-width: 480px) {
+    .input {
+        width: 100%;
+    }
+
+    .step-content label {
+        width: 100%;
+        border-bottom: solid .1px #cccccc;
+    }
+
+    .package {
+        width: 100%;
+        height: 15rem;
+        box-sizing: border-box;
+    }
+
+    .package-option {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        height: 4rem;
+    }
+}

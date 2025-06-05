@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0rem;
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
 }
 
 @font-face {
@@ -17,11 +17,15 @@
 
 .container {
   width: 100%;
-  height: 100vh;
-  background-color: #FFF9C9;
+  height: 100dvh;
+  background-color: #D0E7D2;
   overflow: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 #retro {
