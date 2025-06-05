@@ -57,10 +57,10 @@ export default function SpotifyAccount() {
               >
                 <span>
                   {pkg === "Monthly"
-                    ? "Monthly Package"
+                    ? "Monthly"
                     : pkg === "Bi-annual"
-                    ? "Bi-Annual (6 Months) Package"
-                    : "Annual (1 Year) Package"}
+                    ? "Bi-Annual (6 Months)"
+                    : "Annual (1 Year)"}
                 </span>
                 <b>
                   {pkg === "Monthly"
