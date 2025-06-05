@@ -5,8 +5,8 @@
 
 .services-container {
     width: 100%;
-    height: 85dvh;
-    margin-top: 15dvh;
+    height: 90dvh;
+    margin-top: 10dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -107,7 +107,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 999;
 }
 
 .modal-content {
