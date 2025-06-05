@@ -22,7 +22,7 @@
 
 .service-box {
     width: 30%;
-    height: 13rem;
+    height: 10rem;
     background-color: #B0D9B1;
     margin: 2rem 0;
     border-radius: 10px;
@@ -40,8 +40,13 @@
 }
 
 .service-logo {
-    height: 60%;
-    width: 60%;
+    height: 50%;
+    width: 50%;
+}
+
+.service-logo2 {
+    height: 50%;
+    width: 40%;
 }
 
 .start-button {
@@ -58,8 +63,8 @@
 }
 
 .start-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 /* Add media queries for smaller screens */
@@ -71,10 +76,15 @@
 }
 
 @media (max-width: 480px) {
+    .services-container {
+        height: 62dvh;
+        margin-top: 8dvh;
+    }
+
     .service-box {
-        width: 95%;
+        width: 85%;
         /* Make service boxes full-width for mobile screens */
-        margin: 10px 0;
+        margin: 20px 0;
         /* Adjust margin for better spacing */
     }
 
@@ -134,4 +144,3 @@
         transform: scale(1);
     }
 }
-

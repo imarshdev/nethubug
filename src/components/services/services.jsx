@@ -41,7 +41,7 @@ export default function Services() {
         </div>
 
         <div className="service-box">
-          <img src={apple} className="service-logo" />
+          <img src={apple} className="service-logo2" />
           <button
             className="start-button"
             onClick={() => handleOpenModal("apple")}
