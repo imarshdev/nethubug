@@ -1,146 +1,196 @@
-@font-face {
-    font-family: roboto;
-    src: url(../../fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf);
+/* SERVICES STYLES */
+.services {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px;
+    background-color: #FDFAF6;
+    letter-spacing: 2px;
 }
 
-.services-container {
+.service-container {
     width: 100%;
-    height: 90dvh;
-    margin-top: 10dvh;
+    height: max-content;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.service-item {
+    width: 30%;
+    height: 15rem;
+    margin: 20px 0;
+    background-color: #FFF;
+    border: solid 1px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 1px 1px #000000;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.service-item:hover {
+    box-shadow: 3px 3px #000000;
+}
+
+.item-logo {
+    border-bottom: solid 1px #000;
+    width: 100%;
+    height: 50%;
+}
+
+.item-name {
+    border-bottom: solid 1px #000;
+    width: 100%;
+    height: 30%;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.item-price {
+    width: 100%;
+    height: 20%;
+    box-sizing: border-box;
+    padding: 0 10px;
+    display: flex;
+    justify-content: end;
     align-items: center;
     box-sizing: border-box;
 }
 
-.services {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
+.price-tag {
+    display: inline-block;
+    width: auto;
+    height: 38px;
 
-.service-box {
-    width: 30%;
-    height: 10rem;
-    background-color: #B0D9B1;
-    margin: 2rem 0;
-    border-radius: 10px;
-    box-shadow: 2px 3px #222831;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: background-color 0.2s ease-in-out;
-    /* Add transition effect for background color */
-}
+    background-color: #ff8dd8;
+    -webkit-border-radius: 3px 4px 4px 3px;
+    -moz-border-radius: 3px 4px 4px 3px;
+    border-radius: 3px 4px 4px 3px;
 
-.service-box:hover {
-    background-color: #B0D9B1;
-    /* Darken background color on hover */
-}
+    border-left: 1px solid #ff8dd8;
 
-.service-logo {
-    height: 50%;
-    width: 50%;
-}
+    /* This makes room for the triangle */
+    margin-left: 19px;
 
-.service-logo2 {
-    height: 50%;
-    width: 40%;
-}
-
-.start-button {
-    background-color: #618264;
-    box-shadow: 2px 3px #222831;
-    transition: transform 0.2s ease-in-out;
-    /* Add transition effect */
-    margin-bottom: 15px;
-}
-
-.start-button:hover {
-    transform: scale(1.05);
-    /* Increase size subtly on hover */
-}
-
-.start-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-/* Add media queries for smaller screens */
-@media (max-width: 768px) {
-    .service-box {
-        width: 45%;
-        /* Adjust width for tablets and smaller screens */
-    }
-}
-
-@media (max-width: 480px) {
-    .services-container {
-        height: 62dvh;
-        margin-top: 8dvh;
-    }
-
-    .service-box {
-        width: 85%;
-        /* Make service boxes full-width for mobile screens */
-        margin: 20px 0;
-        /* Adjust margin for better spacing */
-    }
-
-    .services {
-        justify-content: center;
-        /* Center service boxes on mobile screens */
-    }
-}
-
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(6px);
-    /* Blur the background */
-    background-color: rgba(0, 0, 0, 0.3);
-    /* Optional: darken a bit */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-}
-
-.modal-content {
-    width: 75%;
-    height: 80%;
-    background-color: white;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
-    overflow-y: auto;
     position: relative;
-    animation: fadeIn 0.3s ease-in-out;
+
+    color: #000;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 38px;
+
+    padding: 0 10px 0 10px;
 }
 
-.close-button {
+/* Makes the triangle */
+.price-tag:before {
+    content: "";
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
+    display: block;
+    left: -19px;
+    width: 0;
+    height: 0;
+    border-top: 19px solid transparent;
+    border-bottom: 19px solid transparent;
+    border-right: 19px solid #ff8dd8;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.96);
+/* Makes the circle */
+.price-tag:after {
+    content: "";
+    background-color: #000;
+    border-radius: 50%;
+    width: 4px;
+    height: 4px;
+    display: block;
+    position: absolute;
+    left: -9px;
+    top: 17px;
+}
+
+@media screen and (max-width: 460px) {
+    .service-item {
+        width: 48%;
+        height: 20rem;
     }
 
-    to {
-        opacity: 1;
-        transform: scale(1);
+    .service-container {
+        justify-content: space-between;
     }
+}
+
+
+/* COOKIES STYLES */
+
+.cookies-container {
+    width: 100%;
+    margin: 20px 0;
+    background-color: #FFF;
+    border: solid 1px;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    position: relative;
+}
+
+.cookie-item {
+    width: 50%;
+    height: 7rem;
+    position: relative;
+}
+
+.cookie-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    height: 1px;
+    background-color: #ccc;
+    /* or any other color */
+}
+
+
+@media screen and (max-width: 460px) {
+    .cookies-container {
+        width: 100%;
+        margin: 20px 0;
+        background-color: #FFF;
+        border: solid 1px;
+        border-radius: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        position: relative;
+    }
+
+    .cookie-item {
+        width: 100%;
+        height: 7rem;
+        position: relative;
+    }
+}
+
+
+
+
+
+@media screen and (max-width: 460px) {
+    .cookies-container {
+        justify-content: space-between;
+    }
+}
+
+
+
+/* DISCOUNT STYLES */
+
+.discount-box {
+    width: 100%;
+    height: 18rem;
+    background-color: #fff;
+    border: solid 1px;
+    border-radius: 5px;
+    margin: 20px 0;
 }

@@ -1,37 +1,21 @@
+@font-face {
+    font-family: roboto;
+    src: url(./fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf);
+}
+
 #root {
-  margin: 0;
-  padding: 0rem;
-  width: 100%;
-  height: 100dvh;
-}
-
-@font-face {
-  font-family: retro;
-  src: url(./fonts/Bebas_Neue/BebasNeue-Regular.ttf);
-}
-
-@font-face {
-  font-family: roboto;
-  src: url(./fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf);
-}
-
-.container {
-  width: 100%;
-  height: 100dvh;
-  background-color: #ffffff;
-  overflow: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
-#retro {
-  font-family: retro;
+    background-color: #E4EFE7;
+    width: 100%;
+    height: 100vh;
 }
 
 #roboto {
-  font-family: roboto;
+    font-family: roboto;
+}
+
+.container {
+    width: 100%;
+    height: 100vh;
+    box-sizing: border-box;
+    overflow: scroll;
 }

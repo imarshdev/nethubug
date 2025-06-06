@@ -1,69 +1,79 @@
 import "./services.css";
-import spotify from "../../assets/spotify.svg";
-import apple from "../../assets/apple.svg";
-import close from "../../assets/close.svg";
-import { getPaymentDate } from "../../utils/paydate";
-import { useEffect, useState } from "react";
-import SpotifyAccount from "./spotify/spotify";
-import AppleAccount from "./apple/apple";
+import spotify from "./spotify/spotify.jpg";
+import apple from "./apple/apple.jpg";
+
+const serviceItems = [
+  {
+    name: "Spotify Premium",
+    description: "unlimited music for 1 person",
+    logo: spotify,
+    prices: [
+      { plan: "Monthly", price: 6000 },
+      { plan: "Bi-Annual", price: 35000 },
+      { plan: "Annual", price: 70000 },
+    ],
+  },
+  {
+    name: "Apple Music",
+    description: "stream music, no ads",
+    logo: apple,
+    prices: [
+      { plan: "Monthly", price: 8000 },
+      { plan: "Bi-Annual", price: 45000 },
+      { plan: "Annual", price: 90000 },
+    ],
+  },
+];
 
 export default function Services() {
-  const [payDate, setPayDate] = useState({ day: "", month: "" });
-  const [showModal, setShowModal] = useState(false);
-  const [selectedService, setSelectedService] = useState(null);
-
-  useEffect(() => {
-    const info = getPaymentDate();
-    setPayDate(info);
-  }, []);
-
-  const handleOpenModal = (service) => {
-    setSelectedService(service);
-    setShowModal(true);
-  };
-
   return (
-    <div className="services-container">
-      <h2 id="roboto">Choose Your Service</h2>
-      <p id="roboto" style={{ width: "80%" }}>
-        Start now, pay on the {payDate.day}th of {payDate.month}
-      </p>
-
-      <div className="services">
-        <div className="service-box">
-          <img src={spotify} className="service-logo" />
-          <button
-            className="start-button"
-            onClick={() => handleOpenModal("spotify")}
-          >
-            <b id="roboto">Get Started</b>
-          </button>
-        </div>
-
-        <div className="service-box">
-          <img src={apple} className="service-logo2" />
-          <button
-            className="start-button"
-            onClick={() => handleOpenModal("apple")}
-          >
-            <b id="roboto">Get Started</b>
-          </button>
-        </div>
-      </div>
-
-      <h3 id="roboto">Other Services coming soon</h3>
-
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            {selectedService === "spotify" && <SpotifyAccount />}
-            {selectedService === "apple" && <AppleAccount />}
-            <div className="close-button" onClick={() => setShowModal(false)}>
-              <img src={close} style={{ height: "20px" }} />
+    <div className="services">
+      {/* SERVICES AREA */}
+      <b id="roboto">Premium Services</b>
+      <div className="service-container">
+        {serviceItems.map((service, index) => (
+          <div key={index} className="service-item">
+            <div
+              className="item-logo"
+              style={{
+                boxSizing: "border-box",
+                border: index === 0 ? "1.2rem solid black" : "none", // Add a border to the first image
+              }}
+            >
+              <img
+                src={service.logo}
+                alt={service.name}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            </div>
+            <div className="item-name">
+              <b style={{ fontSize: "12px", margin: 0 }} id="roboto">
+                {service.name}
+              </b>
+              <br />
+              <span style={{ fontSize: "12px" }}>{service.description}</span>
+            </div>
+            <div className="item-price">
+              <div id="roboto" className="price-tag">
+                <b>{service.prices[0].price.toLocaleString("en-US")} UGX</b>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
+      {/* COOKIES AREA */}
+      <b id="roboto">Cookie Jar</b>
+      <div className="cookies-container">
+        <div className="cookie-item"></div>
+        <div className="cookie-item"></div>
+        <div className="cookie-item"></div>
+        <div className="cookie-item"></div>
+      </div>
+      {/* DISCONT AREA */}
+      <b id="roboto">Discount Box</b>
+      <div className="discount-box"></div>
+      {/* BUSINESS ADD AREA */}
+      <b id="roboto">Ads</b>
     </div>
   );
 }

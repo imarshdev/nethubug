@@ -5,6 +5,14 @@
 
   background-color: #242424;
 }
+*{
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+*::-webkit-scrollbar{
+  display: none !important;
+}
 
 a {
   font-weight: 500;
