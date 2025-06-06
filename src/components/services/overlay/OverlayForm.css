@@ -1,0 +1,179 @@
+@font-face {
+    font-family: roboto;
+    src: url(../../../fonts/Roboto_Mono/RobotoMono-VariableFont_wght.ttf);
+}
+
+.overlay-form {
+    width: 100%;
+    box-sizing: border-box;
+    position: fixed;
+    inset: 0;
+    background: #E4EFE7;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    animation: slideUp 0.5s ease-out;
+    overflow-y: auto;
+    padding-top: 40px;
+    /* Push form down from top */
+    font-family: roboto;
+}
+
+.overlay-form.closing {
+    animation: slideDown 0.5s ease-in forwards;
+}
+
+.form-content {
+    width: 400px;
+    background-color: #FFF;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: solid 1px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 10px;
+    transition: max-height 0.3s ease;
+    /* Optional: smooth growth */
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(100%);
+    }
+}
+
+.cover {
+    padding: 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-content input {
+    padding: 10px;
+    font-size: 16px;
+    height: 2rem;
+    border: 1px solid black;
+    outline: none;
+}
+
+.form-content button {
+    padding: 10px;
+    height: 3.5rem;
+    font-size: 14px;
+    background: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.close-btn {
+    background: #ccc;
+    color: black;
+}
+
+/* Radio styles */
+.custom-radio {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+    cursor: pointer;
+}
+
+.custom-radio input[type="radio"] {
+    appearance: none;
+    background-color: #fff;
+    border: 2px solid black;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.custom-radio.checked input[type="radio"] {
+    background-color: #f6a9e2;
+}
+
+.custom-radio input[type="radio"]::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #000;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.custom-radio.checked input[type="radio"]::before {
+    opacity: 1;
+}
+
+/* Gift toggle styles */
+.gift-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 10px 20px 25px;
+    border-bottom: 1px solid black;
+}
+
+.switch {
+    width: 40px;
+    height: 20px;
+    background: #eee;
+    border: 1px solid black;
+    border-radius: 20px;
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+.switch .dot {
+    width: 14px;
+    height: 14px;
+    background: black;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: all 0.3s ease;
+}
+
+.switch.on {
+    background: black;
+}
+
+.switch.on .dot {
+    left: 23px;
+    background: white;
+}
+
+@media screen and (max-width: 560px) {
+    .form-content {
+        width: 90%;
+    }
+}

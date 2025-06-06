@@ -107,7 +107,7 @@
     top: 17px;
 }
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 560px) {
     .service-item {
         width: 48%;
         height: 20rem;
@@ -152,7 +152,7 @@
 }
 
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 560px) {
     .cookies-container {
         width: 100%;
         margin: 20px 0;
@@ -176,7 +176,7 @@
 
 
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 560px) {
     .cookies-container {
         justify-content: space-between;
     }
