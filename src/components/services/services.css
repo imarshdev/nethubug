@@ -62,6 +62,7 @@
     height: 38px;
 
     background-color: #ff8dd8;
+    box-shadow: 3px 3px #000000;
     -webkit-border-radius: 3px 4px 4px 3px;
     -moz-border-radius: 3px 4px 4px 3px;
     border-radius: 3px 4px 4px 3px;
@@ -107,6 +108,25 @@
     top: 17px;
 }
 
+.price-tag.spotify {
+    background-color: #E5E5EA;
+    border-left: 1px solid #E5E5EA;
+}
+
+.price-tag.price-tag.spotify::before {
+    border-right: 19px solid #E5E5EA;
+}
+
+.price-tag.apple {
+    background-color: #E5E5EA;
+    border-left: 1px solid #E5E5EA;
+}
+
+.price-tag.price-tag.apple::before {
+    border-right: 19px solid #E5E5EA;
+}
+
+
 @media screen and (max-width: 560px) {
     .service-item {
         width: 48%;
@@ -117,72 +137,6 @@
         justify-content: space-between;
     }
 }
-
-
-/* COOKIES STYLES */
-
-.cookies-container {
-    width: 100%;
-    margin: 20px 0;
-    background-color: #FFF;
-    border: solid 1px;
-    border-radius: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    position: relative;
-}
-
-.cookie-item {
-    width: 50%;
-    height: 7rem;
-    position: relative;
-}
-
-.cookie-item:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 95%;
-    height: 1px;
-    background-color: #ccc;
-    /* or any other color */
-}
-
-
-@media screen and (max-width: 560px) {
-    .cookies-container {
-        width: 100%;
-        margin: 20px 0;
-        background-color: #FFF;
-        border: solid 1px;
-        border-radius: 10px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        position: relative;
-    }
-
-    .cookie-item {
-        width: 100%;
-        height: 7rem;
-        position: relative;
-    }
-}
-
-
-
-
-
-@media screen and (max-width: 560px) {
-    .cookies-container {
-        justify-content: space-between;
-    }
-}
-
-
 
 /* DISCOUNT STYLES */
 

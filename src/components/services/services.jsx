@@ -3,6 +3,7 @@ import "./services.css";
 import spotify from "./spotify/spotify.jpg";
 import apple from "./apple/apple.jpg";
 import OverlayForm from "./overlay/overlay";
+import Cookies from "./cookies/cookies";
 
 const serviceItems = [
   {
@@ -80,7 +81,10 @@ export default function Services() {
               <span style={{ fontSize: "12px" }}>{service.description}</span>
             </div>
             <div className="item-price">
-              <div id="roboto" className="price-tag">
+              <div
+                id="roboto"
+                className={`price-tag ${index === 0 ? "spotify" : "apple"}`}
+              >
                 <b>{service.prices[0].price.toLocaleString("en-US")} UGX</b>
               </div>
             </div>
@@ -88,14 +92,7 @@ export default function Services() {
         ))}
       </div>
 
-      {/* COOKIE, DISCOUNT, ADS sections */}
-      <b id="roboto">Cookie Jar</b>
-      <div className="cookies-container">
-        <div className="cookie-item"></div>
-        <div className="cookie-item"></div>
-        <div className="cookie-item"></div>
-        <div className="cookie-item"></div>
-      </div>
+      <Cookies />
 
       <b id="roboto">Discount Box</b>
       <div className="discount-box"></div>

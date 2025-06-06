@@ -1,21 +1,13 @@
 import { useEffect, useState } from "react";
 import "./OverlayForm.css";
 
-function useThemeColor(color = "#ffffff") {
-  useEffect(() => {
-    const meta = document.querySelector('meta[name="theme-color"]');
-    const originalColor = meta?.getAttribute("content");
-
-    if (meta) meta.setAttribute("content", color);
-
-    return () => {
-      if (meta) meta.setAttribute("content", originalColor || "#ffffff");
-    };
-  }, [color]);
-}
-
-export default function OverlayForm({ service, form, setForm, onClose, isClosing }) {
-  useThemeColor("#ffffff");
+export default function OverlayForm({
+  service,
+  form,
+  setForm,
+  onClose,
+  isClosing,
+}) {
 
   const [selectedPlan, setSelectedPlan] = useState(service.prices[0].plan);
   const [isGift, setIsGift] = useState(false);
@@ -44,7 +36,9 @@ export default function OverlayForm({ service, form, setForm, onClose, isClosing
       message += `Name: ${form.name}`;
     }
 
-    const whatsappLink = `https://wa.me/256706916240?text=${encodeURIComponent(message)}`;
+    const whatsappLink = `https://wa.me/256706916240?text=${encodeURIComponent(
+      message
+    )}`;
     window.open(whatsappLink, "_blank");
   };
 
@@ -63,12 +57,18 @@ export default function OverlayForm({ service, form, setForm, onClose, isClosing
           />
         </div>
 
-        <div className="plan-selector cover" role="radiogroup" aria-label="Select Plan">
+        <div
+          className="plan-selector cover"
+          role="radiogroup"
+          aria-label="Select Plan"
+        >
           <span>Select Plan</span>
           {service.prices.map((priceObj, i) => (
             <label
               key={i}
-              className={`custom-radio ${selectedPlan === priceObj.plan ? "checked" : ""}`}
+              className={`custom-radio ${
+                selectedPlan === priceObj.plan ? "checked" : ""
+              }`}
               onClick={() => setSelectedPlan(priceObj.plan)}
             >
               <input
@@ -112,7 +112,9 @@ export default function OverlayForm({ service, form, setForm, onClose, isClosing
 
         <div className="cover">
           <button onClick={handleSubmit}>Proceed to WhatsApp</button>
-          <button className="close-btn" onClick={onClose}>Cancel</button>
+          <button className="close-btn" onClick={onClose}>
+            Cancel
+          </button>
         </div>
       </div>
     </div>
