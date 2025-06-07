@@ -94,10 +94,8 @@ export default function Services() {
 
       <Cookies />
 
-      <b id="roboto">Discount Box</b>
       <div className="discount-box"></div>
 
-      <b id="roboto">Ads</b>
 
       {selectedService && (
         <OverlayForm
