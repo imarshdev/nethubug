@@ -41,10 +41,30 @@ export default defineConfig({
           },
         ],
       },
+
+      // ✅ Add this:
+      workbox: {
+        runtimeCaching: [
+          {
+            // Cache all bundled images (like those from /assets/)
+            urlPattern: ({ url }) =>
+              url.pathname.startsWith("/assets/") &&
+              /\.(png|jpg|jpeg|svg|webp|gif)$/.test(url.pathname),
+            handler: "CacheFirst",
+            options: {
+              cacheName: "app-images-cache",
+              expiration: {
+                maxEntries: 60,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+            },
+          },
+        ],
+      },
     }),
   ],
   server: {
-    host: "0.0.0.0", // <- This allows access from your local network
-    port: 5173, // optional: can be changed if needed
+    host: "0.0.0.0",
+    port: 5173,
   },
 });
