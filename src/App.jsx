@@ -1,15 +1,20 @@
 import { useState } from "react";
 import "./App.css";
-import Navbar from "./components/navbar/navbar";
+import Navbar, { CartCard, CartCheckout } from "./components/navbar/navbar";
 import Services from "./components/services/services";
+import { CartProvider } from "./components/cart/cartContext";
 
 function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   return (
-    <div className="container">
-      <Navbar />
-      <Services />
-    </div>
+    <CartProvider>
+      <div className="container">
+        <Navbar />
+        <Services />
+        <CartCard cartOpen={cartOpen} setCartOpen={setCartOpen} />
+        <CartCheckout cartOpen={cartOpen} setCartOpen={setCartOpen} />
+      </div>
+    </CartProvider>
   );
 }
 
