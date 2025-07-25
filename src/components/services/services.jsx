@@ -11,7 +11,7 @@ const serviceItems = [
     description: "unlimited music for 1 person",
     logo: spotify,
     prices: [
-      { plan: "Monthly", price: 6000 },
+      { plan: "Monthly", price: 5000 },
       { plan: "Bi-Annual", price: 35000 },
       { plan: "Annual", price: 70000 },
     ],
@@ -92,10 +92,7 @@ export default function Services() {
         ))}
       </div>
 
-      <Cookies />
-
       <div className="discount-box"></div>
-
 
       {selectedService && (
         <OverlayForm
