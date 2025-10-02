@@ -3,7 +3,7 @@ export default function TopBar() {
     <div
       className="top-bar"
       style={{
-        height: "40px",
+        height: "60px",
         padding: "0 10px 10px 10px",
         background: "#000",
         color: "#fff",
@@ -14,6 +14,7 @@ export default function TopBar() {
         right: 0,
       }}
     >
+      <span>hello</span>
       <Topper />
     </div>
   );
