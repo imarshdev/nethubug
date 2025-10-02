@@ -1,32 +1,12 @@
-export default function TopBar() {
-  return (
-    <div
-      className="top-bar"
-      style={{
-        height: "40px",
-        padding: "10px",
-        background: "#000",
-        color: "#fff",
-        textAlign: "center",
-        position: "fixed",
-        paddingTop:
-          "environment" in navigator ? "env(safe-area-inset-top)" : "10px",
-        left: 0,
-        right: 0,
-      }}
-    >
-      <Topper />
-    </div>
-  );
-}
-
 import React, { useState, useRef, useEffect } from "react";
 import "../styles/tabs.css";
 
-export function Topper() {
+export default function TopBar({ page, setPage }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [indicatorStyle, setIndicatorStyle] = useState({});
   const containerRef = useRef(null);
+
+  const tabs = ["Home", "Budget", "Savings", "Edit"];
 
   useEffect(() => {
     const container = containerRef.current;
@@ -41,20 +21,25 @@ export function Topper() {
     }
   }, [activeIndex]);
 
-  const tabs = ["Home", "Budget", "Insights", "Plans"];
+  const handleClick = (index) => {
+    setActiveIndex(index);
+    setPage(tabs[index]); // pass selected tab to parent
+  };
 
   return (
-    <div className="tabs-container" ref={containerRef}>
-      {tabs.map((tab, index) => (
-        <div
-          key={tab}
-          className={`tab-btn ${activeIndex === index ? "active" : ""}`}
-          onClick={() => setActiveIndex(index)}
-        >
-          <p>{tab}</p>
-        </div>
-      ))}
-      <span className="tab-indicator" style={indicatorStyle}></span>
+    <div className="top-bar">
+      <div className="tabs-container" ref={containerRef}>
+        {tabs.map((tab, index) => (
+          <div
+            key={tab}
+            className={`tab-btn ${activeIndex === index ? "active" : ""}`}
+            onClick={() => handleClick(index)}
+          >
+            <p>{tab}</p>
+          </div>
+        ))}
+        <span className="tab-indicator" style={indicatorStyle}></span>
+      </div>
     </div>
   );
 }

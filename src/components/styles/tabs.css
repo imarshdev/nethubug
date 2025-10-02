@@ -1,8 +1,19 @@
+.top-bar {
+  height: 40px;
+  padding: 10px;
+  background: #19183B;
+  color: #fff;
+  text-align: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+}
+
 .tabs-container {
   position: relative;
   display: flex;
   justify-content: space-around;
-  background: #333 !important;
+  background: #1B3C53;
   padding: 6px;
   border-radius: 8px;
   overflow: hidden;
@@ -19,12 +30,13 @@
   cursor: pointer;
   transition: color 0.3s ease;
 }
-.tab-btn p{
-    margin: 0;
-    color: white;
+
+.tab-btn p {
+  margin: 0;
+  color: white;
 }
 
-.tab-btn.active p{
+.tab-btn.active p {
   color: black;
 }
 
@@ -34,6 +46,7 @@
   top: 0;
   background: white;
   border-radius: 6px;
-  transition: all 0.3s ease; /* smooth slide */
+  transition: all 0.3s ease;
+  /* smooth slide */
   z-index: 0;
 }

@@ -1,9 +1,26 @@
-.dashboard {
-    margin-top: 80px;
+.balance-banner {
     width: 100%;
     box-sizing: border-box;
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #1B3C53;
+    /* green for positive feel */
+    color: white;
+    padding: 20px 16px;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 80px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.balance-text p{
+    margin: 10px auto 24px;
+    font-size: 28px;
+    /* big for main balance */
+    font-weight: 700;
+}
+
+.monthly-income {
+    font-size: 14px;
+    /* smaller for secondary info */
+    margin-top: 4px;
+    opacity: 0.85;
 }

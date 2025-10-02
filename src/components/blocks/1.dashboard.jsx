@@ -1,21 +1,34 @@
 import "../styles/dash.css";
-export default function Dashboard() {
+
+export default function Dashboard({ balance, dailyIncome, monthlyIncome }) {
+  // Format number to UGX
+  const formatUGX = (amount) => {
+    return new Intl.NumberFormat("en-UG", {
+      style: "currency",
+      currency: "UGX",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  };
+
   return (
-    <div className="dashboard">
-      <h3>Hello Marsh !</h3>
-      <p>
-        Current Balance: <span>0.00</span>{" "}
-        <span style={{ fontSize: "9px" }}>(cash, savings, other accounts)</span>
-      </p>
-      <p>
-        Daily Income: <span>0.00</span>{" "}
-      </p>
-      <p>
-        Monthly Total Income: <span>0.00</span>{" "}
-      </p>
-      <p>
-        Descretion Expenditure Balance: <span>0.00</span>{" "}
-      </p>
+    <div className="balance-banner">
+      <p style={{ margin: 0, fontSize: "12px" }}>Total Expenditure Balance:</p>
+      <div className="balance-text">
+        <p>{formatUGX(balance)}</p>
+      </div>
+      {dailyIncome !== undefined && (
+        <div className="monthly-income">
+          <p style={{ margin: 0 }}>Daily Income: {formatUGX(dailyIncome)}</p>
+        </div>
+      )}
+      {monthlyIncome !== undefined && (
+        <div className="monthly-income">
+          <p style={{ margin: 0 }}>
+            Monthly Income: {formatUGX(monthlyIncome)}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
