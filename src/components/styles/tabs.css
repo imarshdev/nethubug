@@ -1,0 +1,38 @@
+.tabs-container {
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  background: #333;
+  padding: 6px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 14px;
+  padding: 5px;
+  z-index: 1;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.tab-btn p{
+    margin: 0;
+}
+
+.tab-btn.active {
+  color: black;
+}
+
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  background: white;
+  border-radius: 6px;
+  transition: all 0.3s ease; /* smooth slide */
+  z-index: 0;
+}
