@@ -39,7 +39,7 @@ span {
 
 .content {
   box-sizing: border-box;
-  padding: 20px;
+  padding: 10px;
   width: 100%;
   display: flex;
   flex-direction: column;
