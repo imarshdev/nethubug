@@ -3,18 +3,18 @@ export default function TopBar() {
     <div
       className="top-bar"
       style={{
-        height: "60px",
-        padding: "0 10px 10px 10px",
+        height: "40px",
+        padding: "10px",
         background: "#000",
         color: "#fff",
         textAlign: "center",
         position: "fixed",
-        top: 0,
+        paddingTop:
+          "environment" in navigator ? "env(safe-area-inset-top)" : "10px",
         left: 0,
         right: 0,
       }}
     >
-      <span>hello</span>
       <Topper />
     </div>
   );
