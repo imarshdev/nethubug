@@ -1,21 +1,13 @@
-import { useState } from "react";
-import "./App.css";
-import Navbar, { CartCard, CartCheckout } from "./components/navbar/navbar";
-import Services from "./components/services/services";
-import { CartProvider } from "./components/cart/cartContext";
+import Dashboard from "./components/blocks/1.dashboard";
+import Income from "./components/blocks/2.income";
 
-function App() {
-  const [cartOpen, setCartOpen] = useState(false);
+export default function App() {
   return (
-    <CartProvider>
-      <div className="container">
-        <Navbar />
-        <Services />
-        <CartCard cartOpen={cartOpen} setCartOpen={setCartOpen} />
-        <CartCheckout cartOpen={cartOpen} setCartOpen={setCartOpen} />
+    <div className="container">
+      <div className="content">
+        <Dashboard />
+        <Income />
       </div>
-    </CartProvider>
+    </div>
   );
 }
-
-export default App;
