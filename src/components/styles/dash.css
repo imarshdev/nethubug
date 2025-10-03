@@ -11,7 +11,7 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
-.balance-text p{
+.balance-text p {
     margin: 10px auto 24px;
     font-size: 28px;
     /* big for main balance */
@@ -23,4 +23,45 @@
     /* smaller for secondary info */
     margin-top: 4px;
     opacity: 0.85;
+}
+
+.action-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    background: #19183B;
+    color: #fff;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.withdraw-button,
+.deposit-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #A8CD9F;
+    flex: 1;
+    padding: 10px 0;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.withdraw-button p,
+.deposit-button p{
+    color: #19183B;
+    margin: 0;
+}
+.image {
+    width: 20px;
+    aspect-ratio: auto;
 }
