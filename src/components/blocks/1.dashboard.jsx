@@ -1,6 +1,6 @@
 import "../styles/dash.css";
-import withdrawIcon from "../../assets/withdraw.png";
-import depositIcon from "../../assets/deposit.png";
+import withdrawIcon from "../../assets/minus.png";
+import depositIcon from "../../assets/add.png";
 
 export default function Dashboard({ balance, dailyIncome, monthlyIncome }) {
   // Format number to UGX
@@ -40,11 +40,11 @@ export function ActionButtons() {
     <div className="action-buttons">
       <div className="deposit-button">
         <img className="image" src={depositIcon} alt="Deposit" />
-        <p>Deposit</p>
+        <p>Top Up</p>
       </div>
       <div className="withdraw-button">
-        <img className="image" src={withdrawIcon} alt="Withdraw" />
         <p>Withdraw</p>
+        <img className="image" src={withdrawIcon} alt="Withdraw" />
       </div>
     </div>
   );

@@ -32,7 +32,7 @@
     gap: 20px;
     padding: 10px;
     box-sizing: border-box;
-    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    padding-bottom: calc(30px + env(safe-area-inset-bottom));
     background: #19183B;
     color: #fff;
     text-align: center;
@@ -46,7 +46,7 @@
 .deposit-button {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     background-color: #A8CD9F;
     flex: 1;
     padding: 10px 0;
@@ -59,9 +59,9 @@
 .withdraw-button p,
 .deposit-button p{
     color: #19183B;
-    margin: 0;
+    margin: 0 10px;
 }
 .image {
-    width: 20px;
+    height: 20px;
     aspect-ratio: auto;
 }
