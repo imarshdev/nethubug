@@ -1,10 +1,15 @@
 import { useState } from "react";
 import TopBar from "./components/blocks/0.topbar";
-import Dashboard, { ActionButtons } from "./components/blocks/1.dashboard";
+import Dashboard, {
+  ActionButtons,
+  BottomSheetComponent,
+} from "./components/blocks/1.dashboard";
 import Income from "./components/blocks/2.income";
 
 export default function App() {
   const [page, setPage] = useState("Home");
+  const [isOpen, setIsOpen] = useState(false);
+  const [action, setAction] = useState("");
   return (
     <div className="container">
       <TopBar page={page} setPage={setPage} />
@@ -18,7 +23,12 @@ export default function App() {
           <Income />
         </div>
       )}
-      <ActionButtons />
+      <ActionButtons setIsOpen={setIsOpen} setAction={setAction} />
+      <BottomSheetComponent
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        action={action}
+      />
     </div>
   );
 }

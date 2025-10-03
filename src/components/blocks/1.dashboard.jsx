@@ -1,6 +1,7 @@
 import "../styles/dash.css";
 import withdrawIcon from "../../assets/minus.png";
 import depositIcon from "../../assets/add.png";
+import BottomSheet from "../functions/bottomSheet";
 
 export default function Dashboard({ balance, dailyIncome, monthlyIncome }) {
   // Format number to UGX
@@ -35,16 +36,66 @@ export default function Dashboard({ balance, dailyIncome, monthlyIncome }) {
   );
 }
 
-export function ActionButtons() {
+export function ActionButtons({ setIsOpen, setAction }) {
   return (
     <div className="action-buttons">
-      <div className="deposit-button">
+      <div
+        className="deposit-button"
+        onClick={() => {
+          setIsOpen(true), setAction("Deposit");
+        }}
+      >
         <img className="image" src={depositIcon} alt="Deposit" />
         <p>Top Up</p>
       </div>
-      <div className="withdraw-button">
+      <div
+        className="withdraw-button"
+        onClick={() => {
+          setIsOpen(true), setAction("Withdraw");
+        }}
+      >
         <p>Withdraw</p>
         <img className="image" src={withdrawIcon} alt="Withdraw" />
+      </div>
+    </div>
+  );
+}
+
+export function BottomSheetComponent({ isOpen, setIsOpen, action }) {
+  return (
+    <BottomSheet open={isOpen} onClose={() => setIsOpen(false)}>
+      {action === "Deposit" && <Deposit setIsOpen={setIsOpen} />}
+      {action === "Withdraw" && <Withdraw setIsOpen={setIsOpen} />}
+    </BottomSheet>
+  );
+}
+
+export function Deposit({ setIsOpen }) {
+  return (
+    <div className="bottom-sheet-content">
+      <p>Deposit</p>
+      <div className="bottom-sheet-action-buttons">
+        <div className="close-button" onClick={() => setIsOpen(false)}>
+          <p>Cancel</p>
+        </div>
+        <div className="confirm-button">
+          <p>Confirm</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+export function Withdraw({ setIsOpen }) {
+  return (
+    <div className="bottom-sheet-content">
+      <p>Withdraw</p>
+      <div className="bottom-sheet-action-buttons">
+        <div className="close-button" onClick={() => setIsOpen(false)}>
+          <p>Cancel</p>
+        </div>
+        <div className="confirm-button">
+          <p>Confirm</p>
+        </div>
       </div>
     </div>
   );

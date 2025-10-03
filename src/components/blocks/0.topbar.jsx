@@ -38,7 +38,7 @@ export default function TopBar({ page, setPage }) {
             <p>{tab}</p>
           </div>
         ))}
-        <span className="tab-indicator" style={indicatorStyle}></span>
+        <div className="tab-indicator" style={indicatorStyle}></div>
       </div>
     </div>
   );
