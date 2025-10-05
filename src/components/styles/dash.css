@@ -33,7 +33,7 @@
     padding: 10px;
     box-sizing: border-box;
     padding-bottom: calc(50px + env(safe-area-inset-bottom));
-    background: #19183B;
+    background: #1B3C53;
     color: #fff;
     text-align: center;
     position: fixed;
@@ -48,7 +48,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #A8CD9F;
+    background-color: #fff;
     flex: 1;
     padding: 10px 0;
     border-radius: 8px;
@@ -71,9 +71,38 @@
 
 
 .bottom-sheet-content {
-    height: 80vh;
+    height: 100vh;
     box-sizing: border-box;
     padding: 10px;
+}
+
+.amount-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+.preset-amounts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.amount-card {
+    width: 30%;
+    background-color: #A8CD9F;
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.amount-input:focus {
+    outline: none;
 }
 
 .bottom-sheet-action-buttons {
@@ -107,9 +136,10 @@
     transition: background-color 0.3s ease;
 }
 
-.close-button{
+.close-button {
     background-color: orange;
 }
+
 .confirm-button {
     background-color: lightgreen;
 }

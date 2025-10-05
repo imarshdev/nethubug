@@ -14,8 +14,8 @@ export default defineConfig({
         "apple-touch-icon.png",
       ],
       manifest: {
-        name: "NetHub",
-        short_name: "NetHub",
+        name: "The Bag",
+        short_name: "The Bag",
         description: "Premium Access Closer",
         theme_color: "#3A7D44",
         background_color: "#ffffff",

@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../styles/tabs.css";
 
-export default function TopBar({ page, setPage }) {
-  const [activeIndex, setActiveIndex] = useState(0);
+export default function TopBar({ pageIndex, setPageIndex }) {
   const [indicatorStyle, setIndicatorStyle] = useState({});
   const containerRef = useRef(null);
 
@@ -11,7 +10,7 @@ export default function TopBar({ page, setPage }) {
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
-      const activeEl = container.children[activeIndex];
+      const activeEl = container.children[pageIndex];
       if (activeEl) {
         setIndicatorStyle({
           width: activeEl.offsetWidth + "px",
@@ -19,11 +18,10 @@ export default function TopBar({ page, setPage }) {
         });
       }
     }
-  }, [activeIndex]);
+  }, [pageIndex]);
 
   const handleClick = (index) => {
-    setActiveIndex(index);
-    setPage(tabs[index]); // pass selected tab to parent
+    setPageIndex(index);
   };
 
   return (
@@ -32,7 +30,7 @@ export default function TopBar({ page, setPage }) {
         {tabs.map((tab, index) => (
           <div
             key={tab}
-            className={`tab-btn ${activeIndex === index ? "active" : ""}`}
+            className={`tab-btn ${pageIndex === index ? "active" : ""}`}
             onClick={() => handleClick(index)}
           >
             <p>{tab}</p>

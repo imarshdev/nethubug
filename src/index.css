@@ -3,6 +3,8 @@
   src: url(/src/assets/JosefinSans-Regular.ttf);
 }
 
+
+
 body {
   margin: 0;
   padding: 0;
@@ -14,7 +16,7 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  overflow-y: scroll;
+  overflow: hidden;
 }
 
 a {
@@ -35,6 +37,7 @@ span {
 
 .container {
   width: 100%;
+  overflow: hidden;
 }
 
 .content {
@@ -45,6 +48,7 @@ span {
   flex-direction: column;
   justify-content: center;
   align-items: start;
+  overflow: hidden;
 }
 
 button {
@@ -57,4 +61,52 @@ button {
 
 button:hover {
   background-color: #a8cd9f;
+}
+
+.page-wrapper {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.page-transition {
+  width: 100%;
+  box-sizing: border-box;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+.page-transition.left {
+  animation: slide-left 0.35s ease;
+}
+
+.page-transition.right {
+  animation: slide-right 0.35s ease;
+}
+
+@keyframes slide-left {
+  from {
+    transform: translateX(100%);
+    opacity: 0.2;
+  }
+
+  to {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-right {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.2;
+  }
+
+  to {
+    transform: translateX(0%);
+    opacity: 1;
+  }
 }
