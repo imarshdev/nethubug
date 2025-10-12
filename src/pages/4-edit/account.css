@@ -1,0 +1,144 @@
+/* Account Page Container */
+.account-page {
+  font-family: "Inter", sans-serif;
+  color: #f0f0f0;
+  max-width: 600px;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 50px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Headings */
+.account-page h1 {
+  font-size: 26px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.account-page h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #cce5ff;
+}
+
+/* Labels */
+.account-page label {
+  font-size: 14px;
+  color: #cce5ff;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* Inputs and Selects */
+.account-page input[type="text"],
+.account-page input[type="number"],
+.account-page select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #4a6b7c;
+  background-color: #2a4b63;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.account-page input:focus,
+.account-page select:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.5);
+}
+
+/* Buttons */
+.account-page button {
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.account-page .confirm-btn {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.account-page .confirm-btn:hover {
+  background-color: #45a049;
+}
+
+.account-page .danger-btn {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.account-page .danger-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Income Sources List */
+.account-page ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.account-page ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2a4b63;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.account-page ul li button {
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+/* Add income source container */
+.account-page .add-income-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.account-page .add-income-container input {
+  flex: 1;
+}
+
+.account-page .add-income-container button {
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media screen and (max-width: 480px) {
+  .account-page {
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .account-page h1 {
+    font-size: 22px;
+  }
+
+  .account-page input,
+  .account-page select {
+    font-size: 13px;
+  }
+
+  .account-page button {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+}

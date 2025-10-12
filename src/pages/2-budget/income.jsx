@@ -1,5 +1,3 @@
-import "../styles/income.css";
-
 export default function Income() {
   const rows = [
     { id: 1, source: "Spotify Families", amount: 170000 },
@@ -19,16 +17,16 @@ export default function Income() {
   };
 
   return (
-    <div className="income-container">
-      <h2>Sources of Income</h2>
-      <table className="income-table">
+    <div className="budget-section">
+      <p>Sources of Income</p>
+      <table className="budget-table">
         <thead>
           <tr>
             <th>
-              <p style={{ fontSize: 18 }}>Source</p>
+              <p>Source</p>
             </th>
             <th>
-              <p style={{ fontSize: 18 }}>Amount</p>
+              <p>Amount</p>
             </th>
           </tr>
         </thead>
@@ -39,14 +37,13 @@ export default function Income() {
                 <p>{row.source}</p>
               </td>
               <td>
-                <p>
-                  {formatUGX(row.amount)}
-                </p>
+                <p>{formatUGX(row.amount)}</p>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <div style={{height: '10vh'}}></div>
     </div>
   );
 }
