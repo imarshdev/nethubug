@@ -3,7 +3,14 @@ import { useAppState } from "../../utils/appStateProvider";
 import "../../components/styles/savings.css";
 import SavingsBottomSheet from "./helpers/savingsBottomSheet";
 export default function Savings() {
-  const { allocations, setAllocations, modals, setModals, transactions, setTransactions } = useAppState();
+  const {
+    allocations,
+    setAllocations,
+    modals,
+    setModals,
+    transactions,
+    setTransactions,
+  } = useAppState();
 
   const formatUGX = (amount) =>
     new Intl.NumberFormat("en-UG", {
@@ -35,20 +42,28 @@ export default function Savings() {
   };
 
   const deleteGoal = (goalName) => {
-    const goalToDelete = allocations.savings.goals.find(g => g.name === goalName);
+    const goalToDelete = allocations.savings.goals.find(
+      (g) => g.name === goalName
+    );
     if (!goalToDelete) return;
 
-    if (window.confirm(`Delete goal "${goalName}"? This will refund ${formatUGX(goalToDelete.current)}.`)) {
-      setAllocations(prev => ({
+    if (
+      window.confirm(
+        `Delete goal "${goalName}"? This will refund ${formatUGX(
+          goalToDelete.current
+        )}.`
+      )
+    ) {
+      setAllocations((prev) => ({
         ...prev,
         savings: {
           ...prev.savings,
           total: prev.savings.total + goalToDelete.current,
-          goals: prev.savings.goals.filter(g => g.name !== goalName),
+          goals: prev.savings.goals.filter((g) => g.name !== goalName),
         },
       }));
 
-      setTransactions(prev => [
+      setTransactions((prev) => [
         {
           id: Date.now(),
           type: "GoalDeleted",
@@ -63,7 +78,9 @@ export default function Savings() {
 
   return (
     <div className="savings-container">
-      <p><b>Savings Overview</b></p>
+      <p>
+        <b>Savings Overview</b>
+      </p>
       <p>Total Savings: {formatUGX(allocations.savings.total)}</p>
       <p>Emergency Fund: {formatUGX(allocations.savings.emergency)}</p>
       <p>Investments: {formatUGX(allocations.savings.investments)}</p>
@@ -73,15 +90,17 @@ export default function Savings() {
         {(allocations.savings.goals || []).length === 0 ? (
           <p>No goals yet</p>
         ) : (
-          allocations.savings.goals.map(goal => (
+          allocations.savings.goals.map((goal) => (
             <div key={`${goal.name}-${goal.startDate}`} className="goal-item">
               <div className="goal-header">
-                <p style={{letterSpacing: "2px"}}>{goal.name}</p>
+                <p style={{ letterSpacing: "2px" }}>{goal.name}</p>
               </div>
 
               <div className="goal-progress">
                 <p style={{ fontSize: "12px" }}>Progress:</p>
-                <p style={{ fontSize: "12px" }}>{((goal.current / goal.target) * 100).toFixed(1) || 0}%</p>
+                <p style={{ fontSize: "12px" }}>
+                  {((goal.current / goal.target) * 100).toFixed(1) || 0}%
+                </p>
               </div>
 
               <div className="progress-bar">
@@ -89,34 +108,43 @@ export default function Savings() {
                   className="progress-fill"
                   style={{
                     width: `${(goal.current / goal.target) * 100}%`,
-                    backgroundColor: getProgressColor((goal.current / goal.target) * 100),
+                    backgroundColor: getProgressColor(
+                      (goal.current / goal.target) * 100
+                    ),
                   }}
                 />
               </div>
 
               <div className="progress-details">
                 <div className="progress-amount">
-                  <p style={{fontSize: "14px"}}>{formatUGX(goal.current)}</p>
+                  <p style={{ fontSize: "14px" }}>{formatUGX(goal.current)}</p>
                   <p style={{ fontSize: "12px", marginLeft: "5px" }}>
                     of {formatUGX(goal.target)}
                   </p>
                 </div>
-                <p className="goal-days" style={{ fontSize: "12px" }}>{getDaysRemaining(goal)} days left</p>
+                <p className="goal-days" style={{ fontSize: "12px" }}>
+                  {getDaysRemaining(goal)} days left
+                </p>
               </div>
 
-              <div style={{height: "40px"}}></div>
+              <div style={{ height: "40px" }}></div>
 
-              <div className="delete-goal" onClick={() => deleteGoal(goal.name)}>
+              <div
+                className="delete-goal"
+                onClick={() => deleteGoal(goal.name)}
+              >
                 <p>Delete</p>
               </div>
               <div
                 className="allocate-to-goal"
-                onClick={() => setModals(prev => ({
-                  ...prev,
-                  isGoalOpen: true,
-                  action: "AllocateToGoal",
-                  preselectedGoal: goal.name
-                }))}
+                onClick={() =>
+                  setModals((prev) => ({
+                    ...prev,
+                    isGoalOpen: true,
+                    action: "AllocateToGoal",
+                    preselectedGoal: goal.name,
+                  }))
+                }
               >
                 <p>Allocate</p>
               </div>
@@ -125,7 +153,7 @@ export default function Savings() {
         )}
       </div>
 
-      <div style={{height: "10vh"}}></div>
+      <div style={{ height: "10vh" }}></div>
 
       {/* Single centralized BottomSheet */}
       <SavingsBottomSheet />
