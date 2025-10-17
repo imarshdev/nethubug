@@ -11,11 +11,48 @@ export default function AccountPage() {
     setTransactions,
     setAllocations,
     setBalance,
+    incomeSources,
+    setIncomeSources, // ✅ make sure your appStateProvider includes this
   } = useAppState();
+
   const [incomeName, setIncomeName] = useState("");
   const [incomeAmount, setIncomeAmount] = useState("");
 
-  // Clear all local storage and reset state
+  // ✅ Add new income source (just listing, not adding money)
+  const addIncomeSource = () => {
+    if (!incomeName || !incomeAmount)
+      return alert("Please enter both name and amount.");
+
+    const newSource = {
+      id: Date.now(),
+      source: incomeName.trim(),
+      amount: +incomeAmount,
+    };
+
+    setIncomeSources((prev) => [...(prev || []), newSource]);
+
+    // Log the action for record keeping (optional, not balance-affecting)
+    setTransactions((prev) => [
+      {
+        id: Date.now(),
+        type: "IncomeSourceAdded",
+        description: `Added income source: ${newSource.source}`,
+        date: new Date().toISOString(),
+      },
+      ...prev,
+    ]);
+
+    // ❌ Removed: setBalance(prev => prev + newIncome.amount);
+    setIncomeName("");
+    setIncomeAmount("");
+  };
+
+  // ✅ Remove income source
+  const removeIncomeSource = (id) => {
+    setIncomeSources((prev) => prev.filter((src) => src.id !== id));
+  };
+
+  // ✅ Clear everything
   const clearAllData = () => {
     if (window.confirm("Are you sure you want to clear all saved data?")) {
       localStorage.clear();
@@ -26,35 +63,10 @@ export default function AccountPage() {
         savings: { total: 0, emergency: 0, investments: 0, goals: [] },
       });
       setTransactions([]);
-      setPageIndex(0); // navigate back to Home
+      setIncomeSources([]);
+      setPageIndex(0);
       window.location.reload();
     }
-  };
-
-  // Add new income source
-  const addIncome = () => {
-    if (!incomeName || !incomeAmount)
-      return alert("Enter both name and amount");
-    const newIncome = {
-      id: Date.now(),
-      name: incomeName.trim(),
-      amount: +incomeAmount,
-    };
-
-    setTransactions((prev) => [
-      {
-        id: Date.now(),
-        type: "IncomeAdded",
-        description: `Added income: ${newIncome.name}`,
-        amount: newIncome.amount,
-        date: new Date().toISOString(),
-      },
-      ...prev,
-    ]);
-
-    setBalance((prev) => prev + newIncome.amount);
-    setIncomeName("");
-    setIncomeAmount("");
   };
 
   return (
@@ -70,38 +82,34 @@ export default function AccountPage() {
         />
         <input
           type="number"
-          placeholder="Amount"
+          placeholder="Expected Amount (optional)"
           value={incomeAmount}
           onChange={(e) => setIncomeAmount(e.target.value)}
         />
-        <button className="confirm-btn" onClick={addIncome}>
-          Add
+        <button className="confirm-btn" onClick={addIncomeSource}>
+          Add Source
         </button>
       </div>
 
+      <p>Income Sources</p>
       <ul>
-        {(transactions.filter((t) => t.type === "IncomeAdded") || []).map(
-          (inc) => (
-            <li key={inc.id}>
-              <span>
-                {inc.name}: UGX {inc.amount}
-              </span>
-              <button
-                className="danger-btn"
-                onClick={() => {
-                  if (window.confirm(`Delete income source ${inc.name}?`)) {
-                    setBalance((prev) => prev - inc.amount);
-                    setTransactions((prev) =>
-                      prev.filter((t) => t.id !== inc.id)
-                    );
-                  }
-                }}
-              >
-                Remove
-              </button>
-            </li>
-          )
-        )}
+        {(incomeSources || []).map((src) => (
+          <li key={src.id}>
+            <span>
+              {src.source}: UGX{" "}
+              {src.amount ? src.amount.toLocaleString() : "— (no set amount)"}
+            </span>
+            <button
+              className="danger-btn"
+              onClick={() =>
+                window.confirm(`Delete source ${src.source}?`) &&
+                removeIncomeSource(src.id)
+              }
+            >
+              Remove
+            </button>
+          </li>
+        ))}
       </ul>
 
       <button className="danger-btn" onClick={clearAllData}>

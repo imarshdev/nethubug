@@ -15,6 +15,8 @@ export function ActionButtons() {
     setModals({ ...modals, isOpen: true, action: actionType });
   const openGoalModal = (actionType) =>
     setModals({ ...modals, isGoalOpen: true, action: actionType });
+  const openBudgetModal = (actionType) =>
+    setModals({ ...modals, isBudgetOpen: true, action: actionType });
 
   if (page === "Savings") {
     return (
@@ -40,19 +42,19 @@ export function ActionButtons() {
       <div className="action-buttons">
         <div
           className="deposit-button"
-          onClick={() => openGoalModal("AddExpense")}
+          onClick={() => openBudgetModal("AddExpense")}
         >
           <p>Expense</p>
         </div>
         <div
           className="withdraw-button"
-          onClick={() => openGoalModal("AddClearance")}
+          onClick={() => openBudgetModal("AddClearance")}
         >
           <p>Clearance</p>
         </div>
         <div
           className="deposit-button"
-          onClick={() => openGoalModal("AddWishlist")}
+          onClick={() => openBudgetModal("AddWishlist")}
         >
           <p>Wishlist</p>
         </div>
@@ -160,15 +162,19 @@ export function HomeBottomSheetComponent() {
     </BottomSheet>
   );
 }
- /* ---------------------- DEPOSIT ---------------------- */
+/* ---------------------- DEPOSIT ---------------------- */
 export function Deposit({ handleDeposit }) {
-  const { setModals } = useAppState();
+  const { setModals, incomeSources } = useAppState(); // ✅ get incomeSources
   const [amount, setAmount] = useState("");
   const [step, setStep] = useState(1);
   const [source, setSource] = useState("");
 
   const presetAmounts = [1000, 2000, 5000, 10000, 13000, 15000];
-  const presetSources = ["Bike 1", "Bike 2", "Ev Bike", "Spotify"];
+
+  // ✅ Dynamic sources from AppState
+  const availableSources = incomeSources?.length
+    ? incomeSources.map((s) => s.source)
+    : [];
 
   const handleConfirm = () => {
     handleDeposit(Number(amount), source || "unspecified source");
@@ -181,6 +187,8 @@ export function Deposit({ handleDeposit }) {
   return (
     <div className="bottom-sheet-content">
       <h3>Deposit</h3>
+
+      {/* --- Step 1: Enter Amount --- */}
       {step === 1 && (
         <>
           <p>Amount</p>
@@ -204,29 +212,40 @@ export function Deposit({ handleDeposit }) {
           </div>
         </>
       )}
+
+      {/* --- Step 2: Choose or Enter Source --- */}
       {step === 2 && (
         <>
           <p>Source</p>
           <input
             type="text"
             className="amount-input"
+            placeholder="Enter or select source"
             value={source}
             onChange={(e) => setSource(e.target.value)}
           />
-          <p>Preset Sources</p>
-          <div className="preset-amounts">
-            {presetSources.map((src, i) => (
-              <div
-                key={i}
-                className="amount-card"
-                onClick={() => setSource(src)}
-              >
-                <p>{src}</p>
+
+          {/* ✅ Show saved income sources dynamically */}
+          {availableSources.length > 0 && (
+            <>
+              <p>Saved Sources</p>
+              <div className="preset-amounts">
+                {availableSources.map((src, i) => (
+                  <div
+                    key={i}
+                    className="amount-card"
+                    onClick={() => setSource(src)}
+                  >
+                    <p>{src}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </>
       )}
+
+      {/* --- Action Buttons --- */}
       <div className="bottom-sheet-action-buttons">
         <div
           className="close-button"
@@ -234,11 +253,16 @@ export function Deposit({ handleDeposit }) {
         >
           <p>Cancel</p>
         </div>
+
         {step === 1 && (
-          <div className="confirm-button" onClick={() => amount && setStep(2)}>
+          <div
+            className="confirm-button"
+            onClick={() => amount && setStep(2)}
+          >
             <p>Next</p>
           </div>
         )}
+
         {step === 2 && (
           <div className="confirm-button" onClick={handleConfirm}>
             <p>Confirm</p>
@@ -302,3 +326,5 @@ export function Withdraw({ handleWithdraw }) {
     </div>
   );
 }
+
+// dash extras

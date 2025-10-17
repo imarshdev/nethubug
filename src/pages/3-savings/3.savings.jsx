@@ -125,6 +125,8 @@ export default function Savings() {
         )}
       </div>
 
+      <div style={{height: "10vh"}}></div>
+
       {/* Single centralized BottomSheet */}
       <SavingsBottomSheet />
     </div>

@@ -167,3 +167,66 @@
     color: #fff;
 }
 
+
+
+
+/* ---------------- Scoped Styling for Clearances ---------------- */
+.clearance-table .inline-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 14px;
+  color: #222;
+  padding: 4px 0px;
+  outline: none;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.clearance-table th,
+.clearance-table td {
+    padding: 15px 12px;
+    text-align: left;
+    font-size: 15px;
+}
+
+
+
+/* Make buttons minimal and consistent */
+.clearance-table .done-btn,
+.clearance-table .clear-btn {
+  padding: 6px 10px;
+  font-size: 13px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #fff;
+  transition: background 0.2s ease;
+}
+
+.clearance-table .done-btn {
+  background-color: #2e7d32;
+}
+
+.clearance-table .done-btn:hover {
+  background-color: #1b5e20;
+}
+
+.clearance-table .clear-btn {
+  background-color: #c62828;
+}
+
+.clearance-table .clear-btn:hover {
+  background-color: #b71c1c;
+}
+
+.clearance-table td p,
+.clearance-table td span {
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.clearance-table tr td p[style*="line-through"] {
+  opacity: 0.75;
+}

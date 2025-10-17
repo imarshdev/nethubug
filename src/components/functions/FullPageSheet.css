@@ -44,7 +44,7 @@
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 15px 12px 30px;
+  padding: 0px 5px 30px;
   scrollbar-width: thin;
   scrollbar-color: #4f6d78 #708993;
 }

@@ -1,13 +1,9 @@
 import "../../../components/styles/budget.css";
+import { useBudgetManager } from "../helper/usebudgethelper";
 
-export default function ExpensesPage({ expenses, budgetManager }) {
-  const formatUGX = (amount) =>
-    new Intl.NumberFormat("en-UG", {
-      style: "currency",
-      currency: "UGX",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount || 0);
+export default function ExpensesPage() {
+  const { expenses, clearExpense, deleteExpense } = useBudgetManager();
+  const formatUGX = (amt) => new Intl.NumberFormat("en-UG", { style: "currency", currency: "UGX", minimumFractionDigits: 0 }).format(amt || 0);
 
   return (
     <div className="budget-allocator">
@@ -15,39 +11,22 @@ export default function ExpensesPage({ expenses, budgetManager }) {
       <table className="budget-table">
         <thead>
           <tr>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Actions</th>
+            <th><p>Description</p></th>
+            <th><p>Amount </p></th>
+            <th><p>Actions</p></th>
           </tr>
         </thead>
         <tbody>
           {expenses.length === 0 ? (
-            <tr>
-              <td colSpan={3}>No upcoming expenses</td>
-            </tr>
+            <tr><td colSpan={3}>No upcoming expenses</td></tr>
           ) : (
-            expenses.map((exp) => (
-              <tr
-                key={exp.id}
-                style={{
-                  textDecoration:
-                    exp.status === "cleared" ? "line-through" : "none",
-                }}
-              >
-                <td data-label="Description">{exp.description}</td>
-                <td data-label="Amount">{formatUGX(exp.amount)}</td>
-                <td
-                  data-label="Actions"
-                  style={{ display: "flex", gap: "8px" }}
-                >
-                  {exp.status !== "cleared" && (
-                    <button onClick={() => budgetManager.clearExpense(exp.id)}>
-                      Mark as Cleared
-                    </button>
-                  )}
-                  <button onClick={() => budgetManager.deleteExpense(exp.id)}>
-                    Delete
-                  </button>
+            expenses.map((e) => (
+              <tr key={e.id} style={{ textDecoration: e.status === "cleared" ? "line-through" : "none" }}>
+                <td><p>{e.description}</p></td>
+                <td><p>{formatUGX(e.amount)}</p></td>
+                <td style={{ display: "flex", gap: "8px" }}>
+                  {e.status !== "cleared" && <button onClick={() => clearExpense(e.id)}>Cleared</button>}
+                  <button onClick={() => deleteExpense(e.id)}>Delete</button>
                 </td>
               </tr>
             ))

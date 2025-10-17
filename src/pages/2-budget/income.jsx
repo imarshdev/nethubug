@@ -1,16 +1,14 @@
-export default function Income() {
-  const rows = [
-    { id: 1, source: "Spotify Families", amount: 170000 },
-    { id: 2, source: "Bike 1", amount: 312000 },
-    { id: 2, source: "Bike 2", amount: 312000 },
-    { id: 2, source: "Electric Bike", amount: 40000 },
-  ];
+import React from "react";
+import { useAppState } from "../../utils/appStateProvider";
 
-  // Format number to UGX
-  const formatUGX = (amount) => {
+export default function Income() {
+  const { incomeSources, preferredCurrency } = useAppState();
+
+  // Format number to the user's preferred currency
+  const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-UG", {
       style: "currency",
-      currency: "UGX",
+      currency: preferredCurrency || "UGX",
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount);
@@ -19,31 +17,41 @@ export default function Income() {
   return (
     <div className="budget-section">
       <p>Sources of Income</p>
-      <table className="budget-table">
-        <thead>
-          <tr>
-            <th>
-              <p>Source</p>
-            </th>
-            <th>
-              <p>Amount</p>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.id}>
-              <td>
-                <p>{row.source}</p>
-              </td>
-              <td>
-                <p>{formatUGX(row.amount)}</p>
-              </td>
+      <div className="empty-state">
+        <table className="budget-table">
+          <thead>
+            <tr>
+              <th>
+                <p>Source</p>
+              </th>
+              <th>
+                <p>Monthly Amount</p>
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div style={{height: '10vh'}}></div>
+          </thead>
+          <tbody>
+            {incomeSources.length === 0 ? (
+              <tr>
+                <td colSpan={2} style={{ textAlign: "center" }}>
+                  <p>No income sources added yet.</p>
+                </td>
+              </tr>
+            ) : (
+              (incomeSources || []).map((src) => (
+                <tr key={src.id}>
+                  <td>
+                    <p>{src.source}</p>
+                  </td>
+                  <td>
+                    <p>{formatCurrency(src.amount)}</p>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ height: "10vh" }}></div>
     </div>
   );
 }
