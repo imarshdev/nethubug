@@ -5,8 +5,7 @@ import FullPageSheet from "../../components/functions/FullPageSheet";
 import ExpensesPage from "./subcomponents/expenses";
 import ClearancesPage from "./subcomponents/clearance";
 import WishlistPage from "./subcomponents/wishlist";
-import { useState } from "react";
-import { ActionButtons } from "../1-home/DashboardExtras";
+import { useEffect, useState } from "react";
 import { useAppState } from "../../utils/appStateProvider";
 import { useBudgetManager } from "./helper/usebudgethelper";
 
@@ -16,8 +15,12 @@ export default function BudgetAllocator() {
     content: null,
   });
   const { modals, setModals, balance, allocations } = useAppState();
+  const openBudgetModal = (actionType) =>
+    setModals({ ...modals, isBudgetOpen: true, action: actionType });
+
   const budgetManager = useBudgetManager();
   const { expenses, clearances, wishlist } = budgetManager;
+
 
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
@@ -51,50 +54,80 @@ export default function BudgetAllocator() {
 
     setDescription("");
     setAmount("");
-    setModals({ ...modals, isGoalOpen: false, action: null });
+    setModals({ ...modals, isBudgetOpen: false, action: "" });
   };
 
   return (
     <div className="budget-allocator">
-      <ActionButtons />
-
       {/* ---------------- Budget Allocation Summary ---------------- */}
       <p style={{ marginTop: "80px" }}>Current Budget Breakdown</p>
       <table className="budget-table">
         <thead>
           <tr>
-            <th><p> Category</p></th>
-            <th><p>% Allocation </p></th>
-            <th><p>Amount</p></th>
+            <th>
+              <p> Category</p>
+            </th>
+            <th>
+              <p>% Allocation </p>
+            </th>
+            <th>
+              <p>Amount</p>
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><p>Total</p></td>
-            <td><p>100% </p></td>
-            <td><p>{formatUGX(balance)}</p></td>
+            <td>
+              <p>Total</p>
+            </td>
+            <td>
+              <p>100% </p>
+            </td>
+            <td>
+              <p>{formatUGX(balance)}</p>
+            </td>
           </tr>
           <tr>
-            <td><p>Fixed Costs</p></td>
-            <td><p>{totalPercentage.needs}% </p></td>
-            <td><p>{formatUGX(allocations.needs)}</p></td>
+            <td>
+              <p>Fixed Costs</p>
+            </td>
+            <td>
+              <p>{totalPercentage.needs}% </p>
+            </td>
+            <td>
+              <p>{formatUGX(allocations.needs)}</p>
+            </td>
           </tr>
           <tr>
-            <td><p>Variable Costs</p></td>
-            <td><p>{totalPercentage.wants}%</p></td>
-            <td><p>{formatUGX(allocations.wants)}</p></td>
+            <td>
+              <p>Variable Costs</p>
+            </td>
+            <td>
+              <p>{totalPercentage.wants}%</p>
+            </td>
+            <td>
+              <p>{formatUGX(allocations.wants)}</p>
+            </td>
           </tr>
           <tr>
-            <td><p>Savings</p></td>
-            <td><p>{totalPercentage.savings}%</p></td>
-            <td><p>{formatUGX(allocations.savings.total)}</p></td>
+            <td>
+              <p>Savings</p>
+            </td>
+            <td>
+              <p>{totalPercentage.savings}%</p>
+            </td>
+            <td>
+              <p>{formatUGX(allocations.savings.total)}</p>
+            </td>
           </tr>
         </tbody>
       </table>
 
       {/* ---------------- Budget Sections ---------------- */}
       <BudgetSection
+        actionType="AddExpense"
         title="Upcoming Expenses"
+        openBudgetModal={openBudgetModal}
         items={expenses}
         formatUGX={formatUGX}
         onAdd={() =>
@@ -102,7 +135,9 @@ export default function BudgetAllocator() {
         }
       />
       <BudgetSection
+        actionType="AddClearance"
         title="Clearances"
+        openBudgetModal={openBudgetModal}
         items={clearances}
         formatUGX={formatUGX}
         onAdd={() =>
@@ -110,7 +145,9 @@ export default function BudgetAllocator() {
         }
       />
       <BudgetSection
+        actionType="AddWishlist"
         title="Wishlist"
+        openBudgetModal={openBudgetModal}
         items={wishlist}
         formatUGX={formatUGX}
         onAdd={() =>
@@ -126,7 +163,6 @@ export default function BudgetAllocator() {
         {fullPageSheet.content}
       </FullPageSheet>
 
-      <Income />
       <div style={{ height: "5vh" }} />
 
       {/* ---------------- Bottom Sheet ---------------- */}
@@ -178,47 +214,90 @@ export default function BudgetAllocator() {
 }
 
 // ---------------- Budget Section Component ----------------
-function BudgetSection({ title, items = [], formatUGX, onAdd }) {
+function BudgetSection({
+  title,
+  items = [],
+  formatUGX,
+  onAdd,
+  actionType,
+  openBudgetModal,
+}) {
   return (
     <div className="budget-section">
       <div className="section-header">
         <p>{title}</p>
+        {/* swapped: now 'See all' opens full page */}
         <p onClick={onAdd}>See all</p>
       </div>
+
       <table className="budget-table">
         <thead>
           <tr>
             {items.length === 0 ? (
               <>
-                <th><p>Description</p></th>
-                <th><p>Amount</p></th>
+                <th>
+                  <p>Description</p>
+                </th>
+                <th>
+                  <p>Amount</p>
+                </th>
               </>
             ) : (
               Object.keys(items[0])
                 .filter((k) => k !== "id")
-                .map((k) => <th key={k}><p>{k}</p></th>)
+                .map((k) => (
+                  <th key={k}>
+                    <p>{k}</p>
+                  </th>
+                ))
             )}
           </tr>
         </thead>
+
         <tbody>
           {items.length === 0 ? (
-            <tr>
-              <td colSpan={3}><p>No items</p></td>
-            </tr>
-          ) : (
-            items.slice(0, 4).map((item) => (
-              <tr key={item.id}>
-                {Object.keys(item)
-                  .filter((k) => k !== "id")
-                  .map((k) => (
-                    <td key={k}>
-                      <p>{k === "amount"
-                        ? formatUGX(item[k])
-                        : item[k]}</p>
-                    </td>
-                  ))}
+            <>
+              <tr>
+                <td colSpan={3}>
+                  <p>No items</p>
+                </td>
               </tr>
-            ))
+              {/* swapped: bottom row is now 'Add' */}
+              <tr>
+                <td colSpan={3}>
+                  <p
+                    onClick={() => openBudgetModal(actionType)}
+                    style={{ fontWeight: 900 }}
+                  >
+                    Add
+                  </p>
+                </td>
+              </tr>
+            </>
+          ) : (
+            <>
+              {items.slice(0, 5).map((item) => (
+                <tr key={item.id}>
+                  {Object.keys(item)
+                    .filter((k) => k !== "id")
+                    .map((k) => (
+                      <td key={k}>
+                        <p>{k === "amount" ? formatUGX(item[k]) : item[k]}</p>
+                      </td>
+                    ))}
+                </tr>
+              ))}
+              <tr>
+                <td colSpan={3}>
+                  <p
+                    onClick={() => openBudgetModal(actionType)}
+                    style={{ fontWeight: 900 }}
+                  >
+                    Add
+                  </p>
+                </td>
+              </tr>
+            </>
           )}
         </tbody>
       </table>
@@ -226,8 +305,4 @@ function BudgetSection({ title, items = [], formatUGX, onAdd }) {
   );
 }
 
-
-
 // budget allocator
-
-

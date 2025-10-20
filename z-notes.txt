@@ -1,167 +1,1216 @@
-Perfect! We’ll go component by component, focusing on:
-	•	Safe numeric input handling (parseFloat, Math.max(0, …) for amounts).
-	•	Consistent key usage in lists.
-	•	Avoiding state overwrites.
-	•	Preventing unnecessary re-renders.
-	•	Clear, maintainable JSX.
+import "../../components/styles/dash.css";
+import { useAppState } from "../../utils/appStateProvider";
+import { useState, useMemo } from "react";
+import FullPageSheet from "../../components/functions/FullPageSheet";
+import { PiArrowSquareInFill, PiArrowSquareOutFill } from "react-icons/pi";
 
-⸻
+export default function Dashboard() {
+  const {
+    balance,
+    allocations,
+    transactions = [],
+    setModals,
+    modals,
+  } = useAppState();
+  const [sheetOpen, setSheetOpen] = useState(false);
 
-1. BottomSheet.jsx (refactored)
+  // opening modals
+  const openModal = (actionType) =>
+    setModals({ ...modals, isOpen: true, action: actionType });
+
+  // newest first (safe copy)
+  const sortedTransactions = useMemo(
+    () => [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date)),
+    [transactions]
+  );
+
+  const spendable = (allocations?.needs ?? 0) + (allocations?.wants ?? 0);
+
+  const formatUGX = (amount) =>
+    amount !== undefined && !isNaN(amount)
+      ? new Intl.NumberFormat("en-UG", {
+          style: "currency",
+          currency: "UGX",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(amount)
+      : "N/A";
+
+  const getColor = (type) => {
+    switch (type) {
+      case "Deposit":
+      case "Expense Cleared":
+      case "Clearance Payment":
+      case "Wishlist Bought":
+        return "#2e7d32";
+      case "Withdraw":
+      case "Expense Added":
+      case "Expense Deleted":
+      case "Wishlist Deleted":
+      case "Clearance Deleted":
+        return "#c62828";
+      case "GoalCreated":
+      case "Clearance Created":
+        return "#1565c0";
+      case "FundAllocation":
+      case "GoalAllocation":
+        return "#6a1b9a";
+      case "GoalDeleted":
+        return "#ef6c00";
+      default:
+        return "#333";
+    }
+  };
+
+  const isNegative = (type) =>
+    [
+      "Withdraw",
+      "Expense Added",
+      "Clearance Payment",
+      "GoalAllocation",
+      "Wishlist Bought",
+      "GoalDeleted",
+    ].includes(type);
+
+  const totalAllocated = (allocations.savings.goals || []).reduce(
+    (sum, goal) => sum + (goal.current || 0),
+    0
+  );
+  const totalSavings = allocations.savings.total + totalAllocated;
+
+  return (
+    <div className="dash-container">
+      <div style={{ width: "100%", height: "30px" }}></div>
+
+      {/* BALANCE BANNER */}
+      <div
+        className="balance-banner"
+        style={{
+          padding: "15px",
+          borderRadius: "10px",
+          background: "#1b3c53",
+          color: "#f5f5f5",
+        }}
+      >
+        <p style={{ margin: 0, fontSize: "12px", color: "#cfd8dc" }}>
+          Total Expenditure Balance
+        </p>
+        <div className="balance-text" style={{ margin: "5px 0 10px 0" }}>
+          <p
+            style={{
+              fontSize: "20px",
+              fontWeight: 700,
+              margin: 0,
+              color: "#a5d6a7",
+            }}
+          >
+            {formatUGX(spendable)}
+          </p>
+        </div>
+
+        <p
+          style={{
+            fontSize: "13px",
+            color: "#cfd8dc",
+            margin: "8px 0",
+            fontWeight: 600,
+          }}
+        >
+          Current Total Balance:{" "}
+          <span style={{ color: "#ffffff", fontWeight: 700 }}>
+            {formatUGX(balance)}
+          </span>
+        </p>
+
+        <p style={{ fontSize: "12px", color: "#cfd8dc", margin: "5px 0" }}>
+          Total Available Savings:{" "}
+          <span style={{ fontWeight: 600, color: "#ffeb3b" }}>
+            {formatUGX(allocations.savings.total)}
+          </span>
+        </p>
+        <p style={{ fontSize: "12px", color: "#cfd8dc", margin: "5px 0" }}>
+          Total Allocated Savings:{" "}
+          <span style={{ fontWeight: 600, color: "#ffb74d" }}>
+            {formatUGX(totalAllocated)}
+          </span>
+        </p>
+        <hr style={{ margin: "10px 0", borderColor: "#4f768a" }} />
+        <p
+          style={{
+            fontSize: "14px",
+            fontWeight: 700,
+            color: "#81d4fa",
+            margin: "5px 0",
+          }}
+        >
+          Total Savings: {formatUGX(totalSavings)}
+        </p>
+        <br />
+        <div className="dash-action-buttons">
+          <div className="deposit" onClick={() => openModal("Deposit")}>
+            <PiArrowSquareInFill className="image" />
+            <p>Top up</p>
+          </div>
+          <div className="withdraw" onClick={() => openModal("Withdraw")}>
+            <p>Widthdraw</p>
+            <PiArrowSquareOutFill className="image" />
+          </div>
+        </div>
+      </div>
+
+      {/* TRANSACTIONS */}
+      <div className="transactions-placeholder">
+        <div className="transactions-header">
+          <p>Recent Transaction Activity</p>
+          <p
+            style={{ color: "#1b3c53", cursor: "pointer", fontWeight: 600 }}
+            onClick={() => setSheetOpen(true)}
+          >
+            See All
+          </p>
+        </div>
+
+        <div className="transactions-list">
+          {sortedTransactions.length === 0 ? (
+            <p>No transactions yet</p>
+          ) : (
+            sortedTransactions.slice(0, 20).map((t) => (
+              <div
+                key={t.id}
+                className="transaction-item"
+                style={{
+                  borderLeft: `4px solid ${getColor(t.type)}`,
+                  padding: "10px 8px",
+                  marginBottom: "6px",
+                  background: "#fff",
+                  borderRadius: "6px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                }}
+              >
+                <div style={{ flex: 1 }}>
+                  <p
+                    style={{
+                      color: getColor(t.type),
+                      fontWeight: 600,
+                      fontSize: "14px",
+                      margin: "5px 0px",
+                    }}
+                  >
+                    {t.type}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      color: "#555",
+                      margin: "0px 0px 5px 0px",
+                    }}
+                  >
+                    {t.description || "No details"}
+                  </p>
+                </div>
+
+                <div style={{ textAlign: "right", minWidth: "90px" }}>
+                  <p
+                    style={{
+                      color: isNegative(t.type) ? "#c62828" : "#2e7d32",
+                      fontWeight: 700,
+                      fontSize: "14px",
+                      margin: "5px 0px",
+                    }}
+                  >
+                    {t.amount
+                      ? `${isNegative(t.type) ? "- " : "+ "}${formatUGX(
+                          t.amount
+                        )}`
+                      : "N/A"}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "12px",
+                      color: "#888",
+                      margin: "0px 0px 5px 0px",
+                    }}
+                  >
+                    {t.date ? new Date(t.date).toLocaleString() : "N/A"}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      <div style={{ height: "15vh" }}></div>
+
+      {/* FULL PAGE SHEET */}
+      <FullPageSheet open={sheetOpen} onClose={() => setSheetOpen(false)}>
+        <div className="full-transactions-list">
+          <h2>All Transactions</h2>
+          {sortedTransactions.length === 0 ? (
+            <p>No transactions available</p>
+          ) : (
+            sortedTransactions.map((t) => (
+              <div
+                key={t.id}
+                className="transaction-item"
+                style={{
+                  borderLeft: `4px solid ${getColor(t.type)}`,
+                  padding: "10px 8px",
+                  marginBottom: "6px",
+                  background: "#fff",
+                  borderRadius: "6px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ flex: 1 }}>
+                  <p
+                    style={{
+                      color: getColor(t.type),
+                      fontWeight: 600,
+                      fontSize: "14px",
+                      margin: "5px 0px",
+                    }}
+                  >
+                    {t.type}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      color: "#555",
+                      margin: "0px 0px 5px 0px",
+                    }}
+                  >
+                    {t.description || "No details"}
+                  </p>
+                </div>
+
+                <div style={{ textAlign: "right", minWidth: "90px" }}>
+                  <p
+                    style={{
+                      color: isNegative(t.type) ? "#c62828" : "#2e7d32",
+                      fontWeight: 700,
+                      fontSize: "14px",
+                      margin: "5px 0px",
+                    }}
+                  >
+                    {t.amount
+                      ? `${isNegative(t.type) ? "- " : "+ "}${formatUGX(
+                          t.amount
+                        )}`
+                      : "N/A"}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "12px",
+                      color: "#888",
+                      margin: "0px 0px 5px 0px",
+                    }}
+                  >
+                    {t.date ? new Date(t.date).toLocaleString() : "N/A"}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </FullPageSheet>
+    </div>
+  );
+}
 
 
-✅ Fixes:
-	•	Prevents clicks inside the sheet from closing it (stopPropagation).
-	•	Conditional title rendering.
 
-⸻
+// dashboard.jsx
 
-2. AddExpenseForm.jsx (refactored)
+import BottomSheet from "../../components/functions/bottomSheet";
+import { useState } from "react";
+import { useAppState } from "../../utils/appStateProvider";
 
-import React, { useState } from "react";
+/* ---------------------- HOME BOTTOM SHEET ---------------------- */
+export function HomeBottomSheetComponent() {
+  const {
+    modals,
+    setModals,
+    balance,
+    setBalance,
+    allocations,
+    setAllocations,
+    transactions,
+    setTransactions,
+  } = useAppState();
 
-export default function AddExpenseForm({ onAdd, onClose }) {
+  const handleDeposit = (amount, source) => {
+    const needsAdd = amount * 0.5;
+    const wantsAdd = amount * 0.3;
+    const savingsAdd = amount * 0.2;
+
+    setBalance(balance + amount);
+    setAllocations({
+      ...allocations,
+      needs: (allocations.needs ?? 0) + needsAdd,
+      wants: (allocations.wants ?? 0) + wantsAdd,
+      savings: {
+        ...allocations.savings,
+        total: (allocations.savings?.total ?? 0) + savingsAdd,
+      },
+    });
+
+    // ✅ Log simplified transaction
+    setTransactions([
+      ...(transactions || []),
+      {
+        id: Date.now(),
+        type: "Deposit",
+        amount,
+        description: `Deposit from ${source || "unspecified source"}`,
+        date: new Date().toISOString(),
+      },
+    ]);
+  };
+
+  const handleWithdraw = (amount, reason) => {
+    let { needs, wants, savings } = allocations;
+    let sourceDesc = "";
+
+    if (reason === "Fixed") {
+      needs -= amount;
+      sourceDesc = "Fixed costs";
+    } else if (reason === "Variable") {
+      wants -= amount;
+      sourceDesc = "Variable costs";
+    } else if (reason === "Savings") {
+      savings.total -= amount;
+      sourceDesc = "Savings fund";
+    }
+
+    setAllocations({ needs, wants, savings });
+    setBalance(needs + wants + savings.total);
+
+    // ✅ Log simplified transaction
+    setTransactions([
+      ...(transactions || []),
+      {
+        id: Date.now(),
+        type: "Withdraw",
+        amount,
+        description: `Withdrawal for ${sourceDesc}`,
+        date: new Date().toISOString(),
+      },
+    ]);
+  };
+
+  return (
+    <BottomSheet
+      open={modals.isOpen}
+      onClose={() => setModals({ ...modals, isOpen: false })}
+    >
+      {modals.action === "Deposit" && <Deposit handleDeposit={handleDeposit} />}
+      {modals.action === "Withdraw" && (
+        <Withdraw handleWithdraw={handleWithdraw} />
+      )}
+    </BottomSheet>
+  );
+}
+/* ---------------------- DEPOSIT ---------------------- */
+export function Deposit({ handleDeposit }) {
+  const { setModals, incomeSources } = useAppState(); // ✅ get incomeSources
+  const [amount, setAmount] = useState("");
+  const [step, setStep] = useState(1);
+  const [source, setSource] = useState("");
+
+  const presetAmounts = [1000, 2000, 5000, 10000, 13000, 15000];
+
+  // ✅ Dynamic sources from AppState
+  const availableSources = incomeSources?.length
+    ? incomeSources.map((s) => s.source)
+    : [];
+
+  const handleConfirm = () => {
+    handleDeposit(Number(amount), source || "unspecified source");
+    setModals((prev) => ({ ...prev, isOpen: false }));
+    setStep(1);
+    setAmount("");
+    setSource("");
+  };
+
+  return (
+    <div className="bottom-sheet-content">
+      <h3>Deposit</h3>
+
+      {/* --- Step 1: Enter Amount --- */}
+      {step === 1 && (
+        <>
+          <p>Amount</p>
+          <input
+            type="tel"
+            className="amount-input"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+          <p>Preset Amounts</p>
+          <div className="preset-amounts">
+            {presetAmounts.map((amt, i) => (
+              <div
+                key={i}
+                className="amount-card"
+                onClick={() => setAmount(amt)}
+              >
+                <p>{amt.toLocaleString()}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* --- Step 2: Choose or Enter Source --- */}
+      {step === 2 && (
+        <>
+          <p>Source</p>
+          <input
+            type="text"
+            className="amount-input"
+            placeholder="Enter or select source"
+            value={source}
+            onChange={(e) => setSource(e.target.value)}
+          />
+
+          {/* ✅ Show saved income sources dynamically */}
+          {availableSources.length > 0 && (
+            <>
+              <p>Saved Sources</p>
+              <div className="preset-amounts">
+                {availableSources.map((src, i) => (
+                  <div
+                    key={i}
+                    className="amount-card"
+                    onClick={() => setSource(src)}
+                  >
+                    <p>{src}</p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      )}
+
+      {/* --- Action Buttons --- */}
+      <div className="bottom-sheet-action-buttons">
+        <div
+          className="close-button"
+          onClick={() => setModals((prev) => ({ ...prev, isOpen: false }))}
+        >
+          <p>Cancel</p>
+        </div>
+
+        {step === 1 && (
+          <div
+            className="confirm-button"
+            onClick={() => amount && setStep(2)}
+          >
+            <p>Next</p>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="confirm-button" onClick={handleConfirm}>
+            <p>Confirm</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------- WITHDRAW ---------------------- */
+export function Withdraw({ handleWithdraw }) {
+  const { setModals } = useAppState();
+  const [amount, setAmount] = useState("");
+  const [reason, setReason] = useState("");
+
+  const handleConfirm = () => {
+    if (!reason) return alert("Select a withdraw reason (Fixed or Variable)");
+    handleWithdraw(Number(amount), reason);
+    setModals((prev) => ({ ...prev, isOpen: false }));
+    setAmount("");
+    setReason("");
+  };
+
+  return (
+    <div className="bottom-sheet-content">
+      <h3>Withdraw</h3>
+      <p>Amount</p>
+      <input
+        type="tel"
+        className="amount-input"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+      />
+      <p>Reason / Category</p>
+      <div className="preset-amounts">
+        <div
+          className={`amount-card ${reason === "Fixed" ? "active" : ""}`}
+          onClick={() => setReason("Fixed")}
+        >
+          <p>Fixed Cost</p>
+        </div>
+        <div
+          className={`amount-card ${reason === "Variable" ? "active" : ""}`}
+          onClick={() => setReason("Variable")}
+        >
+          <p>Variable Cost</p>
+        </div>
+      </div>
+      <div className="bottom-sheet-action-buttons">
+        <div
+          className="close-button"
+          onClick={() => setModals((prev) => ({ ...prev, isOpen: false }))}
+        >
+          <p>Cancel</p>
+        </div>
+        <div className="confirm-button" onClick={handleConfirm}>
+          <p>Confirm</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// dash extras
+
+
+import "../../components/styles/budget.css";
+import Income from "./income";
+import BottomSheet from "../../components/functions/bottomSheet";
+import FullPageSheet from "../../components/functions/FullPageSheet";
+import ExpensesPage from "./subcomponents/expenses";
+import ClearancesPage from "./subcomponents/clearance";
+import WishlistPage from "./subcomponents/wishlist";
+import { useState } from "react";
+import { useAppState } from "../../utils/appStateProvider";
+import { useBudgetManager } from "./helper/usebudgethelper";
+
+export default function BudgetAllocator() {
+  const [fullPageSheet, setFullPageSheet] = useState({
+    open: false,
+    content: null,
+  });
+  const { modals, setModals, balance, allocations } = useAppState();
+  const openBudgetModal = (actionType) =>
+    setModals({ ...modals, isBudgetOpen: true, action: actionType });
+
+  const budgetManager = useBudgetManager();
+  const { expenses, clearances, wishlist } = budgetManager;
+
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const amt = parseFloat(amount);
-    if (!description || isNaN(amt) || amt <= 0) return alert("Enter valid data");
-    onAdd(description.trim(), amt);
+  const formatUGX = (amt) =>
+    new Intl.NumberFormat("en-UG", {
+      style: "currency",
+      currency: "UGX",
+      minimumFractionDigits: 0,
+    }).format(amt || 0);
+
+  const totalPercentage =
+    balance === 0
+      ? { needs: 0, wants: 0, savings: 0 }
+      : {
+          needs: ((allocations.needs / balance) * 100).toFixed(1),
+          wants: ((allocations.wants / balance) * 100).toFixed(1),
+          savings: ((allocations.savings.total / balance) * 100).toFixed(1),
+        };
+
+  const handleConfirm = () => {
+    if (!description || !amount) return alert("Please fill in all fields");
+    const amt = Number(amount);
+
+    if (modals.action === "AddExpense")
+      budgetManager.addExpense(description, amt);
+    if (modals.action === "AddClearance")
+      budgetManager.addClearance(description, amt);
+    if (modals.action === "AddWishlist")
+      budgetManager.addWishlistItem(description, amt);
+
     setDescription("");
     setAmount("");
-    onClose();
+    setModals({ ...modals, isBudgetOpen: false, action: "" });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Expense Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="border p-2 mb-2 w-full"
-        required
+    <div className="budget-allocator">
+      {/* ---------------- Budget Allocation Summary ---------------- */}
+      <p style={{ marginTop: "80px" }}>Current Budget Breakdown</p>
+      <table className="budget-table">
+        <thead>
+          <tr>
+            <th>
+              <p> Category</p>
+            </th>
+            <th>
+              <p>% Allocation </p>
+            </th>
+            <th>
+              <p>Amount</p>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <p>Total</p>
+            </td>
+            <td>
+              <p>100% </p>
+            </td>
+            <td>
+              <p>{formatUGX(balance)}</p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>Fixed Costs</p>
+            </td>
+            <td>
+              <p>{totalPercentage.needs}% </p>
+            </td>
+            <td>
+              <p>{formatUGX(allocations.needs)}</p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>Variable Costs</p>
+            </td>
+            <td>
+              <p>{totalPercentage.wants}%</p>
+            </td>
+            <td>
+              <p>{formatUGX(allocations.wants)}</p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>Savings</p>
+            </td>
+            <td>
+              <p>{totalPercentage.savings}%</p>
+            </td>
+            <td>
+              <p>{formatUGX(allocations.savings.total)}</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      {/* ---------------- Budget Sections ---------------- */}
+      <BudgetSection
+        actionType="AddExpense"
+        title="Upcoming Expenses"
+        openBudgetModal={openBudgetModal}
+        items={expenses}
+        formatUGX={formatUGX}
+        onAdd={() =>
+          setFullPageSheet({ open: true, content: <ExpensesPage /> })
+        }
       />
-      <input
-        type="number"
-        placeholder="Amount"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        className="border p-2 mb-2 w-full"
-        min="0"
-        step="0.01"
-        required
+      <BudgetSection
+        actionType="AddClearance"
+        title="Clearances"
+        openBudgetModal={openBudgetModal}
+        items={clearances}
+        formatUGX={formatUGX}
+        onAdd={() =>
+          setFullPageSheet({ open: true, content: <ClearancesPage /> })
+        }
       />
-      <button type="submit" className="bg-blue-500 text-white p-2 w-full">
-        Add Expense
-      </button>
-    </form>
-  );
-}
-
-✅ Fixes:
-	•	Numeric parsing with parseFloat.
-	•	Prevents negative or NaN values.
-	•	Clears form after submission.
-
-⸻
-
-3. AddGoalForm.jsx (refactored)
-
-import React, { useState } from "react";
-
-export default function AddGoalForm({ onAdd, onClose }) {
-  const [name, setName] = useState("");
-  const [target, setTarget] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const amt = parseFloat(target);
-    if (!name || isNaN(amt) || amt <= 0) return alert("Enter valid data");
-    onAdd({ name: name.trim(), target: amt });
-    setName("");
-    setTarget("");
-    onClose();
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Goal Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="border p-2 mb-2 w-full"
-        required
+      <BudgetSection
+        actionType="AddWishlist"
+        title="Wishlist"
+        openBudgetModal={openBudgetModal}
+        items={wishlist}
+        formatUGX={formatUGX}
+        onAdd={() =>
+          setFullPageSheet({ open: true, content: <WishlistPage /> })
+        }
       />
-      <input
-        type="number"
-        placeholder="Target Amount"
-        value={target}
-        onChange={(e) => setTarget(e.target.value)}
-        className="border p-2 mb-2 w-full"
-        min="0"
-        step="0.01"
-        required
-      />
-      <button type="submit" className="bg-green-500 text-white p-2 w-full">
-        Add Goal
-      </button>
-    </form>
-  );
-}
 
-✅ Fixes:
-	•	Same numeric validation as AddExpenseForm.
-	•	Clears form after submit.
-	•	Avoids empty or invalid goals.
+      {/* ---------------- Full Page Sheet ---------------- */}
+      <FullPageSheet
+        open={fullPageSheet.open}
+        onClose={() => setFullPageSheet({ open: false, content: null })}
+      >
+        {fullPageSheet.content}
+      </FullPageSheet>
 
-⸻
+      <div style={{ height: "5vh" }} />
 
-4. ExpenseList.jsx (refactored)
-
-import React from "react";
-
-export default function ExpenseList({ expenses, onClear, onDelete }) {
-  if (!expenses.length) return <p>No expenses yet.</p>;
-
-  return (
-    <ul>
-      {expenses.map((e) => (
-        <li key={e.id} className="flex justify-between items-center border p-2 mb-2">
-          <div>
-            <span className="font-semibold">{e.description}</span> - {e.amount.toFixed(2)}
-          </div>
-          <div>
-            {e.status === "pending" && (
-              <button
-                onClick={() => onClear(e.id)}
-                className="bg-green-500 text-white px-2 mr-2"
-              >
-                Clear
-              </button>
-            )}
-            <button
-              onClick={() => onDelete(e.id)}
-              className="bg-red-500 text-white px-2"
+      {/* ---------------- Bottom Sheet ---------------- */}
+      <BottomSheet
+        open={modals.isBudgetOpen}
+        onClose={() =>
+          setModals({ ...modals, isBudgetOpen: false, action: null })
+        }
+      >
+        <div className="bottom-sheet-content">
+          <h3>
+            {modals.action === "AddExpense"
+              ? "Add Expense"
+              : modals.action === "AddClearance"
+              ? "Add Clearance"
+              : "Add Wishlist Item"}
+          </h3>
+          <p>Description / Name</p>
+          <input
+            className="amount-input"
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <p>Amount</p>
+          <input
+            className="amount-input"
+            type="tel"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+          <div className="bottom-sheet-action-buttons">
+            <div
+              className="close-button"
+              onClick={() =>
+                setModals({ ...modals, isBudgetOpen: false, action: null })
+              }
             >
-              Delete
-            </button>
+              Cancel
+            </div>
+            <div className="confirm-button" onClick={handleConfirm}>
+              Confirm
+            </div>
           </div>
-        </li>
-      ))}
-    </ul>
+        </div>
+      </BottomSheet>
+    </div>
   );
 }
 
-✅ Fixes:
-	•	Proper key usage with id.
-	•	Prevents modifying cleared expenses incorrectly.
+// ---------------- Budget Section Component ----------------
+function BudgetSection({
+  title,
+  items = [],
+  formatUGX,
+  onAdd,
+  actionType,
+  openBudgetModal,
+}) {
+  return (
+    <div className="budget-section">
+      <div className="section-header">
+        <p>{title}</p>
+        {/* swapped: now 'See all' opens full page */}
+        <p onClick={onAdd}>See all</p>
+      </div>
 
-⸻
+      <table className="budget-table">
+        <thead>
+          <tr>
+            {items.length === 0 ? (
+              <>
+                <th>
+                  <p>Description</p>
+                </th>
+                <th>
+                  <p>Amount</p>
+                </th>
+              </>
+            ) : (
+              Object.keys(items[0])
+                .filter((k) => k !== "id")
+                .map((k) => (
+                  <th key={k}>
+                    <p>{k}</p>
+                  </th>
+                ))
+            )}
+          </tr>
+        </thead>
 
-I can continue with ClearanceList, WishlistList, AllocationDisplay, and SavingsGoal components, applying the same numeric checks, safe state updates, and list key handling.
+        <tbody>
+          {items.length === 0 ? (
+            <>
+              <tr>
+                <td colSpan={3}>
+                  <p>No items</p>
+                </td>
+              </tr>
+              {/* swapped: bottom row is now 'Add' */}
+              <tr>
+                <td colSpan={3}>
+                  <p
+                    onClick={() => openBudgetModal(actionType)}
+                    style={{ fontWeight: 900 }}
+                  >
+                    Add
+                  </p>
+                </td>
+              </tr>
+            </>
+          ) : (
+            <>
+              {items.slice(0, 5).map((item) => (
+                <tr key={item.id}>
+                  {Object.keys(item)
+                    .filter((k) => k !== "id")
+                    .map((k) => (
+                      <td key={k}>
+                        <p>{k === "amount" ? formatUGX(item[k]) : item[k]}</p>
+                      </td>
+                    ))}
+                </tr>
+              ))}
+              <tr>
+                <td colSpan={3}>
+                  <p
+                    onClick={() => openBudgetModal(actionType)}
+                    style={{ fontWeight: 900 }}
+                  >
+                    Add
+                  </p>
+                </td>
+              </tr>
+            </>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
-Do you want me to continue with those next?
+// budget allocator
+
+
+import "../../../components/styles/budget.css";
+import { useState } from "react";
+import { useBudgetManager } from "../helper/usebudgethelper";
+
+export default function ClearancesPage() {
+  const { clearances, clearPartOfClearance, deleteClearance } =
+    useBudgetManager();
+  const [inputs, setInputs] = useState({});
+
+  const formatUGX = (amount) =>
+    new Intl.NumberFormat("en-UG", {
+      style: "currency",
+      currency: "UGX",
+      minimumFractionDigits: 0,
+    }).format(amount || 0);
+
+  const handleInputChange = (id, value) =>
+    setInputs((prev) => ({ ...prev, [id]: value }));
+
+  const handleDone = (c) => {
+    const amt = Number(inputs[c.id]);
+    if (amt > 0) {
+      clearPartOfClearance(c.id, amt);
+      setInputs((prev) => ({ ...prev, [c.id]: "" }));
+    }
+  };
+
+  return (
+    <div className="budget-allocator">
+      <h2>Clearances</h2>
+      <table className="budget-table clearance-table">
+        <thead>
+          <tr>
+            <th>
+              <p>Clearance</p>
+            </th>
+            <th>
+              <p>Progress</p>
+            </th>
+            <th>
+              <p>Pay</p>
+            </th>
+            <th>
+              <p>Action</p>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {clearances.length === 0 ? (
+            <tr>
+              <td colSpan={4}>
+                <p>No clearances</p>
+              </td>
+            </tr>
+          ) : (
+            clearances.map((c) => {
+              const remaining = c.totalAmount - (c.clearedAmount || 0);
+              const isFullyCleared = remaining <= 0;
+              return (
+                <tr key={c.id}>
+                  <td
+                    style={{
+                      textDecoration: isFullyCleared ? "line-through" : "none",
+                      opacity: isFullyCleared ? 0.6 : 1,
+                    }}
+                  >
+                    <p>{c.description}</p>
+                  </td>
+                  <td>
+                    <p style={{ fontWeight: 600, fontSize: "12px" }}>
+                      {formatUGX(c.clearedAmount || 0)} /
+                    </p>
+                    <p style={{ fontWeight: 600, fontSize: "16px" }}>
+                      {formatUGX(c.totalAmount)}
+                    </p>
+                  </td>
+                  <td>
+                    {!isFullyCleared ? (
+                      <input
+                        type="number"
+                        value={inputs[c.id] || ""}
+                        placeholder="Enter amount"
+                        className="inline-input"
+                        onChange={(e) =>
+                          handleInputChange(c.id, e.target.value)
+                        }
+                      />
+                    ) : (
+                      <span style={{ color: "#2e7d32", fontWeight: 600 }}>
+                        Cleared
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    {!isFullyCleared ? (
+                      <button
+                        className="done-btn"
+                        onClick={() => handleDone(c)}
+                      >
+                        Done
+                      </button>
+                    ) : (
+                      <button
+                        className="delete-btn"
+                        onClick={() => deleteClearance(c.id)}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+
+
+// clearance
+
+
+import "../../../components/styles/budget.css";
+import { useBudgetManager } from "../helper/usebudgethelper";
+
+export default function ExpensesPage() {
+  const { expenses, clearExpense, deleteExpense } = useBudgetManager();
+  const formatUGX = (amt) => new Intl.NumberFormat("en-UG", { style: "currency", currency: "UGX", minimumFractionDigits: 0 }).format(amt || 0);
+
+  return (
+    <div className="budget-allocator">
+      <h2>Upcoming Expenses</h2>
+      <table className="budget-table">
+        <thead>
+          <tr>
+            <th><p>Description</p></th>
+            <th><p>Amount </p></th>
+            <th><p>Actions</p></th>
+          </tr>
+        </thead>
+        <tbody>
+          {expenses.length === 0 ? (
+            <tr><td colSpan={3}>No upcoming expenses</td></tr>
+          ) : (
+            expenses.map((e) => (
+              <tr key={e.id} style={{ textDecoration: e.status === "cleared" ? "line-through" : "none" }}>
+                <td><p>{e.description}</p></td>
+                <td><p>{formatUGX(e.amount)}</p></td>
+                <td style={{ display: "flex", gap: "8px" }}>
+                  {e.status !== "cleared" && <button onClick={() => clearExpense(e.id)}>Cleared</button>}
+                  <button onClick={() => deleteExpense(e.id)}>Delete</button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+
+// expenses
+
+
+import "../../../components/styles/budget.css";
+import { useBudgetManager } from "../helper/usebudgethelper";
+
+export default function WishlistPage() {
+  const { wishlist, markWishlistBought, deleteWishlistItem } = useBudgetManager();
+  const formatUGX = (amt) => new Intl.NumberFormat("en-UG", { style: "currency", currency: "UGX", minimumFractionDigits: 0 }).format(amt || 0);
+
+  return (
+    <div className="budget-allocator">
+      <h2>Wishlist Items</h2>
+      <table className="budget-table">
+        <thead>
+          <tr>
+            <th><p>Item</p></th>
+            <th><p>Price</p></th>
+            <th><p>Actions</p></th>
+          </tr>
+        </thead>
+        <tbody>
+          {wishlist.length === 0 ? (
+            <tr><td colSpan={3}><p>No wishlist items</p></td></tr>
+          ) : (
+            wishlist.map((w) => (
+              <tr key={w.id} style={{ textDecoration: w.status === "bought" ? "line-through" : "none" }}>
+                <td><p>{w.description}</p></td>
+                <td><p>{formatUGX(w.amount)}</p></td>
+                <td style={{ display: "flex", gap: "8px" }}>
+                  {w.status !== "bought" && <button onClick={() => markWishlistBought(w.id)}>Bought</button>}
+                  <button onClick={() => deleteWishlistItem(w.id)}>Delete</button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+
+// wishlist
+
+
+import React, { createContext, useContext } from "react";
+import { useLocalStorageState } from "../hooks/useLocalStorageState";
+
+const AppStateContext = createContext(null);
+
+export function AppStateProvider({ children }) {
+  /* ------------------ Core Financial State ------------------ */
+  const [balance, setBalance] = useLocalStorageState("balance", 0);
+
+  const [allocations, setAllocations] = useLocalStorageState("allocations", {
+    needs: 0,
+    wants: 0,
+    savings: { total: 0, emergency: 0, investments: 0, goals: [] },
+  });
+
+  const [transactions, setTransactions] = useLocalStorageState(
+    "transactions",
+    []
+  );
+
+  /* ------------------ Budget & Expense Data ------------------ */
+  const [expenses, setExpenses] = useLocalStorageState("expenses", []);
+  const [clearances, setClearances] = useLocalStorageState("clearances", []);
+  const [wishlist, setWishlist] = useLocalStorageState("wishlist", []);
+
+  /* ------------------ Account / Profile Settings ------------------ */
+  const [incomeSources, setIncomeSources] = useLocalStorageState(
+    "incomeSources",
+    [] // each item: { id, source, monthlyAmount }
+  );
+  const [username, setUsername] = useLocalStorageState("username", "");
+  const [preferredCurrency, setPreferredCurrency] = useLocalStorageState(
+    "currency",
+    "UGX"
+  );
+
+  /* ------------------ UI & Navigation State ------------------ */
+  const [pageIndex, setPageIndex] = useLocalStorageState("pageIndex", 0);
+  const [modals, setModals] = useLocalStorageState("modals", {
+    isDepositOpen: false,
+    isGoalOpen: false,
+    isBudgetOpen: false,
+    action: null,
+  });
+  const [fullPageSheetOpen, setFullPageSheetOpen] = React.useState(false);
+
+  /* ------------------ Provider Value ------------------ */
+  const value = {
+    // Core
+    balance,
+    setBalance,
+    allocations,
+    setAllocations,
+    transactions,
+    setTransactions,
+
+    // Budget
+    expenses,
+    setExpenses,
+    clearances,
+    setClearances,
+    wishlist,
+    setWishlist,
+
+    // Account
+    incomeSources,
+    setIncomeSources,
+    username,
+    setUsername,
+    preferredCurrency,
+    setPreferredCurrency,
+
+    // UI
+    pageIndex,
+    setPageIndex,
+    modals,
+    setModals,
+    fullPageSheetOpen,
+    setFullPageSheetOpen,
+  };
+
+  return (
+    <AppStateContext.Provider value={value}>
+      {children}
+    </AppStateContext.Provider>
+  );
+}
+
+export function useAppState() {
+  const context = useContext(AppStateContext);
+  if (!context)
+    throw new Error("useAppState must be used within AppStateProvider");
+  return context;
+}
+
+ //  AppStateProvider
+
+
+
+ export const logTransaction = (setTransactions, type, amount, description, date) => {
+  const newTransaction = {
+    id: Date.now().toString(),
+    type,
+    amount,
+    description,
+    date,
+  };
+  setTransactions((prev) => [newTransaction, ...prev])
+};
+ // transaction logger... these should match my request 

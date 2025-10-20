@@ -6,6 +6,7 @@
     overflow-x: auto;
     scrollbar-width: none;
 }
+
 .balance-banner {
     width: 100%;
     box-sizing: border-box;
@@ -32,6 +33,48 @@
     margin-top: 4px;
     opacity: 0.85;
 }
+
+.dash-action-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.withdraw,
+.deposit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    color: #19183B;
+    width: 40%;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.withdraw p,
+.deposit p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.withdraw .image,
+.deposit .image {
+    margin: 0 10px;
+    height: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 .action-buttons {
     width: 100%;

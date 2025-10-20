@@ -1,11 +1,26 @@
 import "../../components/styles/dash.css";
 import { useAppState } from "../../utils/appStateProvider";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import FullPageSheet from "../../components/functions/FullPageSheet";
+import { PiArrowSquareInFill, PiArrowSquareOutFill } from "react-icons/pi";
 
 export default function Dashboard() {
-  const { balance, allocations, transactions = [] } = useAppState();
+  const {
+    balance,
+    allocations,
+    transactions = [],
+    setModals,
+    modals,
+  } = useAppState();
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  useEffect(() => {
+    console.log(transactions);
+  });
+
+  // opening modals
+  const openModal = (actionType) =>
+    setModals({ ...modals, isOpen: true, action: actionType });
 
   // newest first (safe copy)
   const sortedTransactions = useMemo(
@@ -25,40 +40,55 @@ export default function Dashboard() {
         }).format(amount)
       : "N/A";
 
+  // Determine transaction color
   const getColor = (type) => {
-    switch (type) {
-      case "Deposit":
-      case "Expense Cleared":
-      case "Clearance Payment":
-      case "Wishlist Bought":
-        return "#2e7d32";
-      case "Withdraw":
-      case "Expense Added":
-      case "Expense Deleted":
-      case "Wishlist Deleted":
-      case "Clearance Deleted":
-        return "#c62828";
-      case "GoalCreated":
-      case "Clearance Created":
-        return "#1565c0";
-      case "FundAllocation":
-      case "GoalAllocation":
-        return "#6a1b9a";
-      case "GoalDeleted":
-        return "#ef6c00";
-      default:
-        return "#333";
-    }
+    const inflow = ["Deposit", "GoalDeleted"];
+    const outflow = [
+      "Withdraw",
+      "Expense Cleared (NEEDS)",
+      "Wishlist Bought (WANTS)",
+      "Clearance Payment (NEEDS)",
+    ];
+    const neutralBudget = [
+      "Expense Added",
+      "Wishlist Added",
+      "Clearance Added",
+    ];
+    const neutralGoal = ["GoalCreated", "FundAllocation", "GoalAllocation"];
+    const removed = [
+      "Expense Deleted",
+      "Wishlist Deleted",
+      "Clearance Deleted",
+    ];
+
+    if (inflow.includes(type)) return "#2ecc71"; // vivid emerald (Deposit, inflow)
+    if (outflow.includes(type)) return "#e53935"; // strong red (Withdraw, spend)
+    if (neutralBudget.includes(type)) return "#1e88e5"; // deep blue (Expense/Wishlist/Clearance additions)
+    if (neutralGoal.includes(type)) return "#6a1b9a"; // rich purple (Goal, Fund, Allocations)
+    if (removed.includes(type)) return "#4C763B"; // neutral gray (Deletions)
+    return "#043915"; // fallback: soft white-gray for visibility
   };
 
+  // Determine transaction sign
+  const getSign = (type) => {
+    if (["Deposit", "GoalDeleted"].includes(type)) return "+";
+    if (
+      [
+        "Withdraw",
+        "Expense Cleared (NEEDS)",
+        "Wishlist Bought (WANTS)",
+        "Clearance Payment (NEEDS)",
+      ].includes(type)
+    )
+      return "−";
+    return ""; // neutral or removal
+  };
   const isNegative = (type) =>
     [
       "Withdraw",
-      "Expense Added",
       "Clearance Payment",
-      "GoalAllocation",
       "Wishlist Bought",
-      "GoalDeleted",
+      "Expense Cleared",
     ].includes(type);
 
   const totalAllocated = (allocations.savings.goals || []).reduce(
@@ -111,13 +141,13 @@ export default function Dashboard() {
           </span>
         </p>
 
-        <p style={{ fontSize: "13px", color: "#cfd8dc", margin: "5px 0" }}>
+        <p style={{ fontSize: "12px", color: "#cfd8dc", margin: "5px 0" }}>
           Total Available Savings:{" "}
           <span style={{ fontWeight: 600, color: "#ffeb3b" }}>
             {formatUGX(allocations.savings.total)}
           </span>
         </p>
-        <p style={{ fontSize: "13px", color: "#cfd8dc", margin: "5px 0" }}>
+        <p style={{ fontSize: "12px", color: "#cfd8dc", margin: "5px 0" }}>
           Total Allocated Savings:{" "}
           <span style={{ fontWeight: 600, color: "#ffb74d" }}>
             {formatUGX(totalAllocated)}
@@ -134,6 +164,17 @@ export default function Dashboard() {
         >
           Total Savings: {formatUGX(totalSavings)}
         </p>
+        <br />
+        <div className="dash-action-buttons">
+          <div className="deposit" onClick={() => openModal("Deposit")}>
+            <PiArrowSquareInFill className="image" />
+            <p>Top up</p>
+          </div>
+          <div className="withdraw" onClick={() => openModal("Withdraw")}>
+            <p>Widthdraw</p>
+            <PiArrowSquareOutFill className="image" />
+          </div>
+        </div>
       </div>
 
       {/* TRANSACTIONS */}
@@ -152,7 +193,7 @@ export default function Dashboard() {
           {sortedTransactions.length === 0 ? (
             <p>No transactions yet</p>
           ) : (
-            sortedTransactions.slice(0, 10).map((t) => (
+            sortedTransactions.slice(0, 20).map((t) => (
               <div
                 key={t.id}
                 className="transaction-item"
@@ -174,7 +215,7 @@ export default function Dashboard() {
                       color: getColor(t.type),
                       fontWeight: 600,
                       fontSize: "14px",
-                      margin: "10px 0px 10px 0px",
+                      margin: "5px 0px",
                     }}
                   >
                     {t.type}
@@ -183,7 +224,7 @@ export default function Dashboard() {
                     style={{
                       fontSize: "13px",
                       color: "#555",
-                      margin: "0px 0px 10px 0px",
+                      margin: "0px 0px 5px 0px",
                     }}
                   >
                     {t.description || "No details"}
@@ -193,23 +234,21 @@ export default function Dashboard() {
                 <div style={{ textAlign: "right", minWidth: "90px" }}>
                   <p
                     style={{
-                      color: isNegative(t.type) ? "#c62828" : "#2e7d32",
+                      color: isNegative(t.type) ? "#c62828" : getColor(t.type),
                       fontWeight: 700,
                       fontSize: "14px",
-                      margin: "10px 0px 10px 0px",
+                      margin: "5px 0px",
                     }}
                   >
                     {t.amount
-                      ? `${isNegative(t.type) ? "- " : "+ "}${formatUGX(
-                          t.amount
-                        )}`
+                      ? `${getSign(t.type)} ${formatUGX(t.amount)}`
                       : "N/A"}
                   </p>
                   <p
                     style={{
                       fontSize: "12px",
                       color: "#888",
-                      margin: "0px 0px 10px 0px",
+                      margin: "0px 0px 5px 0px",
                     }}
                   >
                     {t.date ? new Date(t.date).toLocaleString() : "N/A"}
@@ -221,7 +260,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div style={{ height: "15vh" }}></div>
+      <div style={{ height: "5vh" }}></div>
 
       {/* FULL PAGE SHEET */}
       <FullPageSheet open={sheetOpen} onClose={() => setSheetOpen(false)}>
@@ -251,7 +290,7 @@ export default function Dashboard() {
                       color: getColor(t.type),
                       fontWeight: 600,
                       fontSize: "14px",
-                      margin: "10px 0px 10px 0px",
+                      margin: "5px 0px",
                     }}
                   >
                     {t.type}
@@ -260,7 +299,7 @@ export default function Dashboard() {
                     style={{
                       fontSize: "13px",
                       color: "#555",
-                      margin: "0px 0px 10px 0px",
+                      margin: "0px 0px 5px 0px",
                     }}
                   >
                     {t.description || "No details"}
@@ -273,7 +312,7 @@ export default function Dashboard() {
                       color: isNegative(t.type) ? "#c62828" : "#2e7d32",
                       fontWeight: 700,
                       fontSize: "14px",
-                      margin: "10px 0px 10px 0px",
+                      margin: "5px 0px",
                     }}
                   >
                     {t.amount
@@ -286,7 +325,7 @@ export default function Dashboard() {
                     style={{
                       fontSize: "12px",
                       color: "#888",
-                      margin: "0px 0px 10px 0px",
+                      margin: "0px 0px 5px 0px",
                     }}
                   >
                     {t.date ? new Date(t.date).toLocaleString() : "N/A"}
@@ -300,3 +339,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+// dashboard.jsx

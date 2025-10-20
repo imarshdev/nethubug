@@ -6,14 +6,17 @@
     font-family: Arial, sans-serif;
     color: #333;
     overflow-x: scroll;
-    height: 90vh;
+    height: 100vh;
     scrollbar-width: none;
 }
 
+/* ===========================
+   Bottom Sheet Forms
+=========================== */
 .add-goal,
 .allocate-goal,
 .allocate-fund {
-    height: 800vh;
+    height: 90vh;
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
@@ -29,7 +32,7 @@
     border-radius: 6px;
 }
 
-
+/* Fund selection buttons (used in AllocateToFund) */
 .goal-buttons {
     display: flex;
     flex-wrap: wrap;
@@ -43,95 +46,252 @@
     margin: 10px 0;
     padding: 10px;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
+
+.goal-button.selected {
+    background-color: #8cb894;
+    color: white;
+}
+
+/* ===========================
+   Savings Header and Overview
+=========================== */
+.savings-header h2 {
+    color: #1b3c53;
+    font-size: 20px;
+    margin-bottom: 6px;
+}
+
+.savings-stats {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0 20px 0;
+    gap: 10px;
+}
+
+.savings-stat-card {
+    flex: 1;
+    background: #e7f0ed;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.savings-stat-card .label {
+    color: #555;
+    font-size: 13px;
+    margin: 0;
+}
+
+.savings-stat-card .value {
+    color: #1b3c53;
+    font-weight: 700;
+    margin: 4px 0 0 0;
+}
+
+/* ===========================
+   Action Buttons (Allocate / Set Goal)
+=========================== */
+.savings-action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.savings-action-buttons .button {
+    flex: 1;
+    background-color: #113A5D;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 1.5px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.savings-action-buttons .button:hover {
+    background-color: #0e304e;
+}
+
+.savings-action-buttons .button p {
+    margin: 5px;
+}
+
+/* ===========================
+   Goals Section Title & Empty State
+=========================== */
+.savings-goals-section {
+    margin-top: 10px;
+}
+
+.savings-goals-section h3 {
+    margin-bottom: 10px;
+    color: #1b3c53;
+}
+
+.no-goals {
+    text-align: center;
+    color: #999;
+    margin-top: 20px;
+}
+
+/* ===========================
+   Bottom Sheet Buttons
+=========================== */
+.bottom-sheet-action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.close-button,
+.confirm-button {
+    flex: 1;
+    text-align: center;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.close-button {
+    background-color: #d84315;
+    color: #fff;
+}
+
+.close-button:hover {
+    background-color: #b83210;
+}
+
+.confirm-button {
+    background-color: #113A5D;
+    color: #fff;
+}
+
+.confirm-button:hover {
+    background-color: #0d2e4a;
+}
+
+
+
+
+
+
+
+
+/* ---------------- GOAL ITEMS ---------------- */
 
 .goal-items {
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
+    gap: 14px;
+    margin-top: 10px;
 }
 
 .goal-item {
-    width: 100%;
-    box-sizing: border-box;
-    background-color: #7f98aa;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    margin: 10px 0;
-    padding: 10px 20px;
+    background: #7f98aa;
+    border: 1px solid #7f98aa;
     border-radius: 10px;
-    position: relative;
+    padding: 14px;
+    color: #1b3c53;
+    display: flex;
+    flex-direction: column;
+    box-shadow: none;
+    transition: transform 0.15s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-.goal-item p {
-    margin: 10px 0;
+.goal-item p{
+    color: #0d2e4a;
 }
 
-.goal-progress {
+.goal-item:active {
+    transform: scale(0.99);
+}
+
+.goal-header {
     display: flex;
     justify-content: space-between;
-    margin: 0;
-}
-
-.goal-progress p {
-    margin: 0;
-}
-
-.progress-details {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-}
-
-.progress-amount {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-}
-
-.delete-goal {
-    background-color: pink;
-    width: 40%;
-    height: 45px;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    border-radius: 0 0 10px;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin: 0;
+    margin-bottom: 8px;
 }
 
-.allocate-to-goal {
-    background-color: lightblue;
-    width: 40%;
-    height: 45px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 0 0 0 10px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    margin: 0;
+.goal-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #1b3c53;
+    margin: 10px 0 0 0;
+}
+
+.goal-days {
+    font-size: 12px;
+    color: #6b7b88;
+    margin: 10px 0 0 0;
+}
+
+.progress-wrapper {
+    margin-top: 4px;
 }
 
 .progress-bar {
-    width: 100%;
-    height: 6px;
-      border-radius: 8px;
-    /* thin bar */
-    background-color: #eee;
+    height: 3px;
+    background: #dfe6ea;
     border-radius: 3px;
     overflow: hidden;
-    margin: 6px 0;
 }
 
 .progress-fill {
     height: 100%;
     border-radius: 3px;
-    transition: width 0.4s ease, background-color 0.4s ease;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 13px;
+    color: #4a5a68;
+}
+
+.goal-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.allocate-btn,
+.delete-btn {
+    width: 66px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.allocate-btn {
+    background-color: #a8cd9f;
+}
+
+.allocate-btn:active {
+    transform: scale(0.95);
+    background-color: #96be8f;
+}
+
+.delete-btn {
+    background-color: #e57373;
 }

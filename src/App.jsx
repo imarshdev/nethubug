@@ -5,7 +5,6 @@ import { AppStateProvider, useAppState } from "./utils/appStateProvider";
 import TopBar from "./components/layout/tabs";
 import Dashboard from "./pages/1-home/1.dashboard";
 import {
-  ActionButtons,
   HomeBottomSheetComponent,
 } from "./pages/1-home/DashboardExtras";
 import BudgetAllocator from "./pages/2-budget/2.budget";
@@ -67,7 +66,6 @@ export default function App() {
           <PageRenderer />
         </SwipeableContainer>
       </div>
-      <ActionButtons />
       <SavingsBottomSheet/>
       <HomeBottomSheetComponent />
     </AppStateProvider>

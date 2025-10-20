@@ -1,7 +1,9 @@
-import { useState } from "react";
 import { useAppState } from "../../utils/appStateProvider";
 import "../../components/styles/savings.css";
 import SavingsBottomSheet from "./helpers/savingsBottomSheet";
+import { MdDelete } from "react-icons/md";
+import { RiFundsFill } from "react-icons/ri";
+
 export default function Savings() {
   const {
     allocations,
@@ -11,6 +13,9 @@ export default function Savings() {
     transactions,
     setTransactions,
   } = useAppState();
+
+  const openGoalModal = (actionType) =>
+    setModals({ ...modals, isGoalOpen: true, action: actionType });
 
   const formatUGX = (amount) =>
     new Intl.NumberFormat("en-UG", {
@@ -78,84 +83,107 @@ export default function Savings() {
 
   return (
     <div className="savings-container">
-      <p>
-        <b>Savings Overview</b>
-      </p>
-      <p>Total Savings: {formatUGX(allocations.savings.total)}</p>
-      <p>Emergency Fund: {formatUGX(allocations.savings.emergency)}</p>
-      <p>Investments: {formatUGX(allocations.savings.investments)}</p>
+      {/* ---------- Header Section ---------- */}
+      <div className="savings-header">
+        <h2>Savings Overview</h2>
+        <p>
+          Total Savings: <b>{formatUGX(allocations.savings.total)}</b>
+        </p>
 
-      <h3>Goals</h3>
-      <div className="goal-items">
-        {(allocations.savings.goals || []).length === 0 ? (
-          <p>No goals yet</p>
-        ) : (
-          allocations.savings.goals.map((goal) => (
-            <div key={`${goal.name}-${goal.startDate}`} className="goal-item">
-              <div className="goal-header">
-                <p style={{ letterSpacing: "2px" }}>{goal.name}</p>
-              </div>
+        <div className="savings-stats">
+          <div className="savings-stat-card">
+            <p className="label">Emergency Fund</p>
+            <p className="value">{formatUGX(allocations.savings.emergency)}</p>
+          </div>
+          <div className="savings-stat-card">
+            <p className="label">Investments</p>
+            <p className="value">
+              {formatUGX(allocations.savings.investments)}
+            </p>
+          </div>
+        </div>
 
-              <div className="goal-progress">
-                <p style={{ fontSize: "12px" }}>Progress:</p>
-                <p style={{ fontSize: "12px" }}>
-                  {((goal.current / goal.target) * 100).toFixed(1) || 0}%
-                </p>
-              </div>
+        <div className="savings-action-buttons">
+          <div
+            className="button"
+            onClick={() => openGoalModal("AllocateToFund")}
+          >
+            <p>Allocate Savings</p>
+          </div>
+          <div className="button" onClick={() => openGoalModal("AddNewGoal")}>
+            <p>Set New Goal</p>
+          </div>
+        </div>
+      </div>
 
-              <div className="progress-bar">
-                <div
-                  className="progress-fill"
-                  style={{
-                    width: `${(goal.current / goal.target) * 100}%`,
-                    backgroundColor: getProgressColor(
-                      (goal.current / goal.target) * 100
-                    ),
-                  }}
-                />
-              </div>
+      {/* ---------- Goals Section ---------- */}
+      <div className="savings-goals-section">
+        <h3>Goals</h3>
+        <div className="goal-items">
+          {(allocations.savings.goals || []).length === 0 ? (
+            <p className="no-goals">No goals yet</p>
+          ) : (
+            allocations.savings.goals.map((goal) => {
+              const progress = (goal.current / goal.target) * 100;
 
-              <div className="progress-details">
-                <div className="progress-amount">
-                  <p style={{ fontSize: "14px" }}>{formatUGX(goal.current)}</p>
-                  <p style={{ fontSize: "12px", marginLeft: "5px" }}>
-                    of {formatUGX(goal.target)}
-                  </p>
+              return (
+                <div key={goal.name} className="goal-item">
+                  <div className="goal-header">
+                    <p className="goal-name">{goal.name}</p>
+                    <p className="goal-days">
+                      {getDaysRemaining(goal)} days left
+                    </p>
+                  </div>
+
+                  <div className="progress-wrapper">
+                    <div className="progress-bar">
+                      <div
+                        className="progress-fill"
+                        style={{
+                          width: `${progress}%`,
+                          backgroundColor: getProgressColor(progress),
+                        }}
+                      ></div>
+                    </div>
+                    <div className="progress-info">
+                      <div>
+                        <p>
+                          {formatUGX(goal.current)} of {formatUGX(goal.target)}
+                        </p>
+                        <p>{progress.toFixed(1)}%</p>
+                      </div>
+                      <div className="goal-actions">
+                        <div
+                          className="allocate-btn"
+                          onClick={() =>
+                            setModals((prev) => ({
+                              ...prev,
+                              isGoalOpen: true,
+                              action: "AllocateToGoal",
+                              preselectedGoal: goal.name,
+                            }))
+                          }
+                        >
+                          <RiFundsFill size={20} color="#000" />
+                        </div>
+                        <div
+                          className="delete-btn"
+                          onClick={() => deleteGoal(goal.name)}
+                        >
+                          <MdDelete size={20} color="#000" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <p className="goal-days" style={{ fontSize: "12px" }}>
-                  {getDaysRemaining(goal)} days left
-                </p>
-              </div>
-
-              <div style={{ height: "40px" }}></div>
-
-              <div
-                className="delete-goal"
-                onClick={() => deleteGoal(goal.name)}
-              >
-                <p>Delete</p>
-              </div>
-              <div
-                className="allocate-to-goal"
-                onClick={() =>
-                  setModals((prev) => ({
-                    ...prev,
-                    isGoalOpen: true,
-                    action: "AllocateToGoal",
-                    preselectedGoal: goal.name,
-                  }))
-                }
-              >
-                <p>Allocate</p>
-              </div>
-            </div>
-          ))
-        )}
+              );
+            })
+          )}
+        </div>
       </div>
 
       <div style={{ height: "10vh" }}></div>
 
-      {/* Single centralized BottomSheet */}
       <SavingsBottomSheet />
     </div>
   );

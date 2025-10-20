@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppState } from "../../utils/appStateProvider";
 import "./account.css";
+import SpendingOverview from "./subcomponents/overview";
 
 export default function AccountPage() {
   const {
@@ -14,6 +15,10 @@ export default function AccountPage() {
     incomeSources,
     setIncomeSources, // ✅ make sure your appStateProvider includes this
   } = useAppState();
+
+  useEffect(() => {
+    console.log(transactions);
+  });
 
   const [incomeName, setIncomeName] = useState("");
   const [incomeAmount, setIncomeAmount] = useState("");
@@ -71,7 +76,7 @@ export default function AccountPage() {
 
   return (
     <div className="account-page">
-      <h1>Account Settings</h1>
+      <SpendingOverview />
 
       <div className="add-income-container">
         <input

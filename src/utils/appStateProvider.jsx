@@ -8,9 +8,21 @@ export function AppStateProvider({ children }) {
   const [balance, setBalance] = useLocalStorageState("balance", 0);
 
   const [allocations, setAllocations] = useLocalStorageState("allocations", {
-    needs: 0,
-    wants: 0,
-    savings: { total: 0, emergency: 0, investments: 0, goals: [] },
+    needs: {
+      total: 0,
+      Expenses: [], // current expenses
+      clearances: [], // planned purchases
+    },
+    wants: {
+      total: 0,
+      wishlist: [], // desired items
+    },
+    savings: {
+      total: 0,
+      emergency: 0,
+      investments: 0,
+      goals: [],
+    },
   });
 
   const [transactions, setTransactions] = useLocalStorageState(
@@ -92,3 +104,7 @@ export function useAppState() {
     throw new Error("useAppState must be used within AppStateProvider");
   return context;
 }
+
+
+
+

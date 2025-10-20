@@ -77,6 +77,12 @@
 .budget-table tbody tr:nth-child(odd) {
     background-color: #A1C2BD;
 }
+.budget-section tbody tr:last-child{
+    background-color: #4a707a;
+}
+.budget-section tbody tr:last-child p{
+    color: #f5f5f5;
+}
 
 .budget-table td {
     color: #333;

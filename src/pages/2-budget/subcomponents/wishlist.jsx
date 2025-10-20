@@ -36,3 +36,8 @@ export default function WishlistPage() {
     </div>
   );
 }
+
+
+// wishlist
+
+
