@@ -20,14 +20,12 @@ export function useBudgetManager() {
 
   /* ---------------- Helper Functions ---------------- */
 
-  // read helper (supports number or object)
   const readTotal = (key) => {
     const val = allocations?.[key];
     if (val == null) return 0;
     return typeof val === "number" ? Number(val) : Number(val.total ?? 0);
   };
 
-  // write helper (preserves structure)
   const writeAllocation = (key, newTotal, draft) => {
     const existing = allocations?.[key];
     if (existing == null || typeof existing === "number") {
@@ -37,7 +35,12 @@ export function useBudgetManager() {
     }
   };
 
-  // ✅ Central helper: update allocations + balance coherently
+  const readTotalFrom = (obj, key) => {
+    const val = obj?.[key];
+    if (val == null) return 0;
+    return typeof val === "number" ? Number(val) : Number(val.total ?? 0);
+  };
+
   const updateAllocationsAndBalance = (updated) => {
     setAllocations(updated);
 
@@ -47,13 +50,6 @@ export function useBudgetManager() {
 
     const newBalance = totalNeeds + totalWants + totalSavings;
     setBalance(newBalance);
-  };
-
-  // helper for reading from a given object (avoid stale reads)
-  const readTotalFrom = (obj, key) => {
-    const val = obj?.[key];
-    if (val == null) return 0;
-    return typeof val === "number" ? Number(val) : Number(val.total ?? 0);
   };
 
   /* ---------------- Withdraw From Allocation ---------------- */
@@ -68,14 +64,12 @@ export function useBudgetManager() {
     const primaryTotal = readTotal(primary);
     const fallbackTotal = readTotal(fallback);
 
-    // enough in primary
     if (primaryTotal >= amt) {
       writeAllocation(primary, primaryTotal - amt, updated);
       updateAllocationsAndBalance(updated);
       return { success: true, source: primary };
     }
 
-    // fallback option
     if (fallbackTotal >= amt) {
       const confirmUse = window.confirm(
         `Not enough in ${primary.toUpperCase()}. Use ${fallback.toUpperCase()} instead?`
@@ -88,19 +82,26 @@ export function useBudgetManager() {
       return { success: false };
     }
 
-    // none available
     alert(
       `Insufficient funds. Neither ${primary.toUpperCase()} nor ${fallback.toUpperCase()} can cover ${amt.toLocaleString()} UGX.`
     );
     return { success: false };
   };
 
+  const now = () => new Date().toISOString();
+
   /* ---------------- Expenses ---------------- */
   const addExpense = (description, amount) => {
     const newExp = { id: Date.now(), description, amount, status: "pending" };
     setExpenses([...expenses, newExp]);
 
-    logTransaction(setTransactions, "Expense Added", amount, description);
+    logTransaction(
+      setTransactions,
+      "Expense Added",
+      amount,
+      description,
+      now()
+    );
   };
 
   const clearExpense = async (id) => {
@@ -118,7 +119,8 @@ export function useBudgetManager() {
       setTransactions,
       `Expense Cleared (${result.source.toUpperCase()})`,
       exp.amount,
-      exp.description
+      exp.description,
+      now()
     );
   };
 
@@ -131,7 +133,8 @@ export function useBudgetManager() {
       setTransactions,
       "Expense Deleted",
       exp.amount,
-      exp.description
+      exp.description,
+      now()
     );
   };
 
@@ -144,7 +147,13 @@ export function useBudgetManager() {
       clearedAmount: 0,
     };
     setClearances([...clearances, c]);
-    logTransaction(setTransactions, "Clearance Added", totalAmount, description);
+    logTransaction(
+      setTransactions,
+      "Clearance Added",
+      totalAmount,
+      description,
+      now()
+    );
   };
 
   const clearPartOfClearance = async (id, amount) => {
@@ -172,7 +181,8 @@ export function useBudgetManager() {
       setTransactions,
       `Clearance Payment (${result.source.toUpperCase()})`,
       amount,
-      c.description
+      c.description,
+      now()
     );
   };
 
@@ -185,7 +195,8 @@ export function useBudgetManager() {
       setTransactions,
       "Clearance Deleted",
       c.totalAmount,
-      c.description
+      c.description,
+      now()
     );
   };
 
@@ -193,7 +204,13 @@ export function useBudgetManager() {
   const addWishlistItem = (description, amount) => {
     const w = { id: Date.now(), description, amount, status: "pending" };
     setWishlist([...wishlist, w]);
-    logTransaction(setTransactions, "Wishlist Added", amount, description);
+    logTransaction(
+      setTransactions,
+      "Wishlist Added",
+      amount,
+      description,
+      now()
+    );
   };
 
   const markWishlistBought = async (id) => {
@@ -213,7 +230,8 @@ export function useBudgetManager() {
       setTransactions,
       `Wishlist Bought (${result.source.toUpperCase()})`,
       w.amount,
-      w.description
+      w.description,
+      now()
     );
   };
 
@@ -222,7 +240,13 @@ export function useBudgetManager() {
     if (!w) return;
     setWishlist(wishlist.filter((item) => item.id !== id));
 
-    logTransaction(setTransactions, "Wishlist Deleted", w.amount, w.description);
+    logTransaction(
+      setTransactions,
+      "Wishlist Deleted",
+      w.amount,
+      w.description,
+      now()
+    );
   };
 
   /* ---------------- Return All ---------------- */
